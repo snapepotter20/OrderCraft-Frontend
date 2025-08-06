@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NewauthService } from '../services/newauth.service';
+import { NewauthService } from '../../services/newauth.service';
 
 @Component({
   selector: 'app-forgot-password',

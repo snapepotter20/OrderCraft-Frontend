@@ -1,0 +1,50 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside
+    class="w-64 bg-gradient-to-b from-orange-900 to-black-500 text-white shadow-lg"
+  >
+    <div class="p-6 text-2xl font-semibold tracking-wide">Procurement Dashboard</div>
+    <nav class="space-y-2 px-4">
+      <div
+        (click)="selectedTab = 'create'"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+        [ngClass]="{
+          'bg-white text-blue-700 font-bold shadow': selectedTab === 'create'
+        }"
+      >
+        ➕ Create Order
+      </div>
+      <div
+        (click)="selectedTab = 'view'"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+        [ngClass]="{
+          'bg-white text-blue-700 font-bold shadow': selectedTab === 'view'
+        }"
+      >
+        👥 View Orders
+      </div>
+      <div
+        (click)="selectedTab = 'profile'"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+        [ngClass]="{
+          'bg-white text-blue-700 font-bold shadow': selectedTab === 'profile'
+        }"
+      >
+        👤 Profile
+      </div>
+      <div
+        (click)="Logout()"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+      >
+        🚪 Logout
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-auto">
+    <app-create-order *ngIf="selectedTab === 'create'"></app-create-order>
+    <app-view-order *ngIf="selectedTab === 'view'"></app-view-order>
+    <!-- <app-profile *ngIf="selectedTab === 'profile'"></app-profile> -->
+  </main>
+</div>

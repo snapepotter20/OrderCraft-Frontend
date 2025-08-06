@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8090';
+  private baseUrl = 'http://localhost:8094/ordercraft';
 
   constructor(private http: HttpClient) {}
 
@@ -26,3 +26,5 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/reset-password`, body);
   }
 }
+
+

@@ -1,0 +1,99 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside
+    class="w-64 bg-gradient-to-b from-pink-900 to-black-400 text-white flex flex-col justify-between shadow-xl"
+  >
+    <div>
+      <div class="p-6 text-xl font-bold tracking-wide border-b border-white/20">
+        📦 Inventory Dashboard
+      </div>
+      <nav class="space-y-1 px-4 mt-4">
+        <div
+          (click)="selectedTab = 'create'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'create'
+          }"
+        >
+          ➕ <span>Create Inventory Transaction</span>
+        </div>
+        <div
+          (click)="selectedTab = 'view'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'view'
+          }"
+        >
+          📋 <span>View Inventory Transaction</span>
+        </div>
+        <div
+          (click)="selectedTab = 'products'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'products'
+          }"
+        >
+          🧾 <span>View All Products</span>
+        </div>
+
+        <!-- <div
+          (click)="selectedTab = 'requestedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'requestedorders'
+          }"
+        >
+          👤 <span>Requested Orders</span>
+        </div> -->
+
+        <!-- <div
+          (click)="selectedTab = 'completedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'completedorders'
+          }"
+        >
+          👤 <span>Completed Orders</span>
+        </div> -->
+
+        <div
+          (click)="selectedTab = 'profile'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'profile'
+          }"
+        >
+          👤 <span>Profile</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Logout -->
+    <div
+      class="flex items-center bg-red-600 border border-red-300 rounded-md text-white gap-2 p-3 m-4 rounded-md text-red-500 hover:text-white hover:bg-red-600 cursor-pointer transition duration-200"
+       (click)="Logout()"
+    >
+      🚪 <span>Logout</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-auto">
+    <!-- <app-view-inventory-transactions
+      *ngIf="selectedTab === 'view'"
+    ></app-view-inventory-transactions>
+    <app-create-inventory-transaction
+      *ngIf="selectedTab === 'create'"
+    ></app-create-inventory-transaction>
+    <app-view-all-products *ngIf="selectedTab === 'products'"></app-view-all-products>
+    <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
+    <app-view-requested-orders-component *ngIf="selectedTab === 'requestedorders'"></app-view-requested-orders-component>
+    <app-view-completed-orders-component *ngIf="selectedTab === 'completedorders'"></app-view-completed-orders-component> -->
+  </main>
+</div>
