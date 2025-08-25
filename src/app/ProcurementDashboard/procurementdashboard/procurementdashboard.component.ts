@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ViewOrderComponent } from '../view-order/view-order.component';
 import { CreateOrderComponent } from '../create-order/create-order.component';
+import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'app-procurementdashboard',
@@ -13,7 +14,7 @@ import { CreateOrderComponent } from '../create-order/create-order.component';
       CommonModule,
       CreateOrderComponent,
       ViewOrderComponent,
-      // ProfileComponent,
+      ProfileComponent,
     ],
   templateUrl: './procurementdashboard.component.html',
   styleUrl: './procurementdashboard.component.css'

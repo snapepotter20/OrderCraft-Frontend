@@ -65,7 +65,10 @@ export class NewLoginComponent {
           this.router.navigate(['/procurement-dashboard']);
         } else if (role === 'ROLE_INVENTORY_MANAGER') {
           this.router.navigate(['/inventory-dashboard']);
-        } else {
+        } else if (role === 'ROLE_PRODUCTION_MANAGER') {
+          this.router.navigate(['/production-dashboard']);
+        }
+         else {
           this.router.navigate(['/dashboard']);
         }
       },

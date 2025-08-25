@@ -1,0 +1,21 @@
+.low-quantity {
+  background-color: #fecaca !important; /* light red background */
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { background-color: #fecaca; }
+  50% { background-color: #f87171; }
+  100% { background-color: #fecaca; }
+}
+
+.low-quantity-text {
+  color: red;
+  font-weight: bold;
+  animation: blink-text 1s infinite;
+}
+
+@keyframes blink-text {
+  0%, 100% { color: red; }
+  50% { color: darkred; }
+}

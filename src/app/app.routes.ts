@@ -7,6 +7,8 @@ import { AdmindashboardComponent } from './AdminDashboard/admindashboard/adminda
 import { NewLoginComponent } from './login/login/login.component';
 import { ProcurementdashboardComponent } from './ProcurementDashboard/procurementdashboard/procurementdashboard.component';
 import { InventorydashboardComponent } from './InventoryManagerDashboard/inventorydashboard/inventorydashboard.component';
+import { TrackOrderComponent } from './ProcurementDashboard/track-order/track-order.component';
+import { ProductiondashboardComponent } from './ProductionManagerDashboard/productiondashboard/productiondashboard.component';
 
 export const routes: Routes = [
   // { path: '', component: LoginComponent },
@@ -16,5 +18,7 @@ export const routes: Routes = [
   { path: 'admin-dashboard', component: AdmindashboardComponent, canActivate: [AuthGuard]  },
   { path: 'procurement-dashboard', component: ProcurementdashboardComponent, canActivate: [AuthGuard]  },
   { path: 'inventory-dashboard', component: InventorydashboardComponent, canActivate: [AuthGuard]  },
+  { path: 'production-dashboard', component: ProductiondashboardComponent, canActivate: [AuthGuard]  },
+  { path: 'track-order/:id', component: TrackOrderComponent , canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

@@ -72,7 +72,7 @@ export class ProcurementService {
     });
   }
 
-    // ✅ GET all products
+  // ✅ GET all products
   getAllProducts(): Observable<any> {
     return this.http.get<any>(`${this.BASE_URL}/getallproducts`, {
       headers: this.getAuthHeaders(),
@@ -86,26 +86,39 @@ export class ProcurementService {
     });
   }
 
+  getDeliveryTrackingByOrderId(orderId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.BASE_URL}/delivery-tracking/${orderId}`, { headers });
+  }
+
   cancelOrder(orderId: number): Observable<any> {
-  const headers = this.getAuthHeaders();
-  return this.http.put(`${this.BASE_URL}/cancel/${orderId}`, null, {
-    headers,
+    const headers = this.getAuthHeaders();
+    return this.http.put(`${this.BASE_URL}/cancel/${orderId}`, null, {
+      headers,
+    });
+  }
+
+  createPaymentSession(paymentData: any): Observable<any> {
+    return this.http.post(
+      'http://localhost:8094/api/payment/create-session',
+      paymentData
+    );
+  }
+
+  verifyPaymentStatus(orderId: string): Observable<any> {
+    return this.http.get(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
+      headers: {
+        'x-api-version': '2022-09-01',
+        'x-client-id': 'YOUR_TEST_CLIENT_ID',
+        'x-client-secret': 'YOUR_TEST_CLIENT_SECRET',
+      },
+    });
+  }
+
+  createReturnOrder(payload: any) {
+  return this.http.post(`${this.BASE_URL}/returnorder`, payload,{
+     headers: { 'Content-Type': 'application/json' }
   });
 }
-
-createPaymentSession(paymentData: any): Observable<any> {
-  return this.http.post('http://localhost:8094/api/payment/create-session', paymentData);
-}
-
-verifyPaymentStatus(orderId: string): Observable<any> {
-  return this.http.get(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
-    headers: {
-      'x-api-version': '2022-09-01',
-      'x-client-id': 'YOUR_TEST_CLIENT_ID',
-      'x-client-secret': 'YOUR_TEST_CLIENT_SECRET'
-    }
-  });
-}
-
 
 }

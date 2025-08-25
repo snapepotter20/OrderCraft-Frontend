@@ -1,131 +1,3 @@
-// import { CommonModule, DatePipe } from '@angular/common';
-// import { Component } from '@angular/core';
-// import {
-//   FormBuilder,
-//   FormGroup,
-//   FormsModule,
-//   ReactiveFormsModule,
-// } from '@angular/forms';
-// import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-// import { ProcurementService } from '../../services/procurement.service';
-// import { debounceTime, distinctUntilChanged } from 'rxjs';
-
-// @Component({
-//   selector: 'app-view-order',
-//   standalone: true,
-//   imports: [FormsModule, CommonModule, RouterModule, ReactiveFormsModule],
-//   providers: [DatePipe],
-//   templateUrl: './view-order.component.html',
-//   styleUrl: './view-order.component.css',
-// })
-// export class ViewOrderComponent {
-//   orders: any[] = [];
-//   orderDetails: any;
-//   filterForm!: FormGroup;
-//   isSortedDesc = true; // default: sort by recent
-//   orderId: number = 0;
-
-//   constructor(
-//     private fb: FormBuilder,
-//     private router: Router,
-//     private route: ActivatedRoute,
-//     private procurementService: ProcurementService,
-//     private datePipe: DatePipe
-//   ) {}
-
-//   ngOnInit(): void {
-//     this.orderId = Number(this.route.snapshot.paramMap.get('id'));
-//     this.filterForm = this.fb.group({
-//       status: [''],
-//       date: [''],
-//     });
-
-//     this.fetchOrders();
-
-//     // this.procurementService.getOrderById(this.orderId).subscribe({
-//     //   next: (res: any) => {
-//     //     this.orderDetails = res;
-//     //   },
-//     //   error: () => alert('Failed to fetch order details'),
-//     // });
-
-//     this.filterForm.valueChanges
-//       .pipe(debounceTime(400), distinctUntilChanged())
-//       .subscribe(() => this.fetchOrders());
-//   }
-
-//   fetchOrders(): void {
-//     const { status, date } = this.filterForm.value;
-//     let formattedDate = '';
-//     if (date) {
-//       formattedDate = this.datePipe.transform(date, 'yyyy-MM-dd') || '';
-//     }
-
-//     this.procurementService.getFilteredOrders(status, formattedDate).subscribe({
-//       next: (data) => {
-//         this.orders = [...data]; // clone array
-//         this.sortOrders(); // apply sorting
-//       },
-//       error: (err) => console.error('Error fetching orders:', err),
-//     });
-//   }
-
-//   toggleSort(): void {
-//     this.isSortedDesc = !this.isSortedDesc;
-//     this.sortOrders();
-//   }
-
-//   sortOrders(): void {
-//     this.orders.sort((a, b) => {
-//       const dateA = new Date(a.orderDate).getTime();
-//       const dateB = new Date(b.orderDate).getTime();
-//       return this.isSortedDesc ? dateB - dateA : dateA - dateB;
-//     });
-//   }
-
-//   downloadInvoicePdf(orderId: number): void {
-//     if (!orderId) return;
-
-//     this.procurementService.downloadInvoice(orderId).subscribe({
-//       next: (fileData) => {
-//         const blob = new Blob([fileData], { type: 'application/pdf' });
-//         const url = window.URL.createObjectURL(blob);
-
-//         const link = document.createElement('a');
-//         link.href = url;
-//         link.download = `invoice_order_${orderId}.pdf`;
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//         window.URL.revokeObjectURL(url);
-//       },
-//       error: () => alert('❌ Failed to download invoice'),
-//     });
-//   }
-
-//   deleteOrder(orderId: number): void {
-//   if (!orderId) return;
-
-//   // You can add a confirmation dialog here
-//   if (!confirm('Are you sure you want to delete this order?')) {
-//     return;
-//   }
-
-//   this.procurementService.deleteOrder(orderId).subscribe({
-//     next: () => {
-//       // Remove the deleted order from the list in UI
-//       this.orders = this.orders.filter(o => o.purchaseOrderId !== orderId);
-//       // Optionally show success message
-//       alert('Order deleted successfully.');
-//     },
-//     error: () => {
-//       alert('❌ Failed to delete order');
-//     },
-//   });
-// }
-
-// }
-
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -143,11 +15,18 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { OrderReturnModalComponent } from '../order-return-modal/order-return-modal.component';
 
 @Component({
   selector: 'app-view-order',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    OrderReturnModalComponent,
+  ],
   providers: [DatePipe],
   templateUrl: './view-order.component.html',
   styleUrl: './view-order.component.css',
@@ -200,6 +79,10 @@ export class ViewOrderComponent {
       },
       error: (err) => console.error('Error fetching orders:', err),
     });
+  }
+
+  goToTrackOrder(id: number) {
+    this.router.navigate(['/track-order', id]);
   }
 
   toggleSort(): void {
@@ -483,5 +366,34 @@ export class ViewOrderComponent {
 
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     FileSaver.saveAs(blob, 'purchase-orders-report.xlsx');
+  }
+
+  returnModalVisible = false;
+  selectedOrder: any = null;
+
+  openReturnModal(order: any) {
+    this.selectedOrder = order;
+    this.returnModalVisible = true;
+  }
+  closeReturnModal() {
+    this.returnModalVisible = false;
+    this.selectedOrder = null;
+  }
+  submitReturnOrder(payload: any) {
+    // Your service call (as discussed previously)
+    this.procurementService.createReturnOrder(payload).subscribe({
+      next: () => {
+        alert('Return order submitted!');
+        this.returnModalVisible = false;
+        this.selectedOrder = null;
+        this.fetchOrders();
+      },
+      // error: (err:any) => alert('Failed to submit return: ' + (err?.error?.message || 'Unknown Error')),
+      error: (err) => {
+        console.error('HTTP Status:', err.status);
+        console.error('Error details:', err);
+        console.error('Backend error body:', err.error);
+      },
+    });
   }
 }

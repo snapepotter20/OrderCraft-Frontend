@@ -114,9 +114,10 @@
   <div *ngIf="orders.length > 0; else noOrders" class="space-y-6">
     <div
       *ngFor="let order of orders"
+      (click)="goToTrackOrder(order.purchaseOrderId)"
       class="border border-gray-200 shadow-sm rounded-xl p-6 bg-white hover:shadow-md transition"
       [ngClass]="{
-        'opacity-60': order.deliveryStatus === 'CANCELLED'
+        'opacity-60': order.deliveryStatus === 'CANCELLED' || order.deliveryStatus === 'RETURNED'
       }"
     >
       <div class="flex flex-col md:flex-row justify-between mb-4">
@@ -140,6 +141,7 @@
                 'bg-blue-500': order.deliveryStatus === 'DISPATCHED',
                 'bg-green-600': order.deliveryStatus === 'DELIVERED',
                 'bg-red-600': order.deliveryStatus === 'CANCELLED',
+                'bg-gray-600': order.deliveryStatus === 'RETURNED',
               }"
             >
               {{ order.deliveryStatus }}
@@ -223,16 +225,21 @@
         <button
           *ngIf="
             order.deliveryStatus !== 'DELIVERED' &&
-            order.deliveryStatus !== 'CANCELLED'
+            order.deliveryStatus !== 'CANCELLED' &&
+            order.deliveryStatus !== 'RETURNED'
           "
-          (click)="onCancelOrder(order.purchaseOrderId)"
+          (click)="
+            onCancelOrder(order.purchaseOrderId); $event.stopPropagation()
+          "
           class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 transition-all duration-200"
         >
           ❌ Cancel Order
         </button>
         <button
           *ngIf="order.deliveryStatus === 'DELIVERED'"
-          (click)="downloadInvoicePdf(order.purchaseOrderId)"
+          (click)="
+            downloadInvoicePdf(order.purchaseOrderId); $event.stopPropagation()
+          "
           class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 transition-all duration-200"
         >
           <svg
@@ -252,16 +259,50 @@
           Invoice
         </button>
 
+        <button
+          *ngIf="
+            order.deliveryStatus === 'DELIVERED' &&
+            order.ordertype === 'CUSTOMER'
+          "
+          (click)="openReturnModal(order); $event.stopPropagation()"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium shadow-sm hover:bg-indigo-700 transition-all duration-200"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+            />
+          </svg>
+          Return Order
+        </button>
+
         <!-- EDIT button -->
         <button
-          *ngIf="order.deliveryStatus !== 'DELIVERED'"
-          [disabled]="order.deliveryStatus === 'CANCELLED'"
+          *ngIf="
+            order.deliveryStatus !== 'DELIVERED' ||
+            order.deliveryStatus !== 'RETURNED'
+          "
+          [disabled]="
+            order.deliveryStatus === 'CANCELLED' ||
+            order.deliveryStatus === 'RETURNED' ||
+            order.deliveryStatus === 'DELIVERED'
+          "
           [title]="
-            order.deliveryStatus === 'CANCELLED'
-              ? 'Cannot edit cancelled order'
+            order.deliveryStatus === 'CANCELLED' ||
+            order.deliveryStatus === 'RETURNED' ||
+            order.deliveryStatus === 'DELIVERED'
+              ? 'Cannot edit this order'
               : ''
           "
-          (click)="openEditModal(order)"
+          (click)="openEditModal(order); $event.stopPropagation()"
           class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-yellow-500 text-white text-sm font-medium shadow-sm hover:bg-yellow-600 transition-all duration-200"
         >
           <svg
@@ -281,7 +322,7 @@
         </button>
         <!-- Delete Order Button (shown for ALL orders) -->
         <button
-          (click)="deleteOrder(order.purchaseOrderId)"
+          (click)="deleteOrder(order.purchaseOrderId); $event.stopPropagation()"
           class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-red-500 text-white text-sm font-medium shadow-sm hover:bg-red-600 transition-all duration-200"
         >
           <svg
@@ -500,3 +541,10 @@
     </form>
   </div>
 </div>
+
+<app-order-return-modal
+  [order]="selectedOrder"
+  [open]="returnModalVisible"
+  (closed)="closeReturnModal()"
+  (submitted)="submitReturnOrder($event)"
+></app-order-return-modal>
