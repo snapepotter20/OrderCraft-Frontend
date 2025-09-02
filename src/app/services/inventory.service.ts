@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 // Model interface for inventory transaction
 export interface InventoryTransaction {
   transactionId?: number;
-  userId: number | any;    // pass logged-in userId or full object
-  product: any;            // pass productId or product object
+  userId: number | any; // pass logged-in userId or full object
+  product: any; // pass productId or product object
   transactionDate?: string;
   transactionType: string;
   quantity: number;
@@ -22,21 +22,21 @@ export class InventoryService {
 
   constructor(private http: HttpClient) {}
 
-    private getAuthHeaders(): HttpHeaders {
-      const token = localStorage.getItem('token');
-      return new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-      });
-    }
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
 
   // /**
   //  * ✅ Deliver an order and log transaction
-  //  * @param orderId 
+  //  * @param orderId
   //  * @param user logged-in user object
   //  */
   deliverOrder(orderId: number, user: any): Observable<any> {
-     const headers = this.getAuthHeaders();
-    return this.http.post<any>(`${this.baseUrl}/deliver/${orderId}`, user,{
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(`${this.baseUrl}/deliver/${orderId}`, user, {
       headers,
     });
   }
@@ -52,22 +52,22 @@ export class InventoryService {
   // }
 
   getTransactions(filters?: any): Observable<InventoryTransaction[]> {
-  const headers = this.getAuthHeaders();
-  let params = new HttpParams();
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
 
-  if (filters) {
-    Object.keys(filters).forEach((key) => {
-      if (filters[key]) {
-        params = params.set(key, filters[key]);
-      }
-    });
+    if (filters) {
+      Object.keys(filters).forEach((key) => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+
+    return this.http.get<InventoryTransaction[]>(
+      `${this.baseUrl}/getalltransactions`,
+      { headers, params }
+    );
   }
-
-  return this.http.get<InventoryTransaction[]>(
-    `${this.baseUrl}/getalltransactions`,
-    { headers, params }
-  );
-}
 
   // ✅ Export PDF
   exportPdf(filters?: any): Observable<Blob> {
@@ -112,5 +112,36 @@ export class InventoryService {
     });
   }
 
+  getAllReturnOrders() {
+    return this.http.get(`${this.baseUrl}/getallreturnedorders`);
+  }
+
+  approveReturnOrder(returnOrderId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put<any>(
+    `${this.baseUrl}/approveReturnOrder/${returnOrderId}`,
+    {},
+    { headers }
+  );
 }
 
+getFilteredReturnOrders(filters?: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  let params = new HttpParams();
+
+  if (filters) {
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) {
+        params = params.set(key, filters[key]);
+      }
+    });
+  }
+
+  return this.http.get(`${this.baseUrl.replace('/inventory', '')}/returnorder/filter`, {
+    headers,
+    params,
+  });
+}
+
+
+}

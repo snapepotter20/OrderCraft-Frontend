@@ -41,6 +41,18 @@
         </div>
 
         <div
+          (click)="selectedTab = 'returnedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'returnedorders'
+          }"
+        >
+          <i class="fas fa-undo-alt text-blue-700"></i>
+          <span>Returned Orders</span>
+        </div>
+
+        <div
           (click)="selectedTab = 'stocks'"
           class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
           [ngClass]="{
@@ -75,7 +87,9 @@
 
   <!-- Main Content -->
   <main class="flex-1 p-8 overflow-auto">
-     <app-inventory-transactions *ngIf="selectedTab === 'inventorytransactions'"></app-inventory-transactions>
+    <app-inventory-transactions
+      *ngIf="selectedTab === 'inventorytransactions'"
+    ></app-inventory-transactions>
     <app-view-stocks *ngIf="selectedTab === 'stocks'"></app-view-stocks>
     <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
     <app-view-requested-orders-component
@@ -84,5 +98,8 @@
     <app-view-completed-orders-component
       *ngIf="selectedTab === 'completedorders'"
     ></app-view-completed-orders-component>
+    <app-returned-orders
+      *ngIf="selectedTab === 'returnedorders'"
+    ></app-returned-orders>
   </main>
 </div>

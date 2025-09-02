@@ -7,13 +7,7 @@ import { ProfileComponent } from '../../ProcurementDashboard/profile/profile.com
 import { ViewRequestedOrdersComponent } from '../view-requested-orders-component/view-requested-orders-component.component';
 import { ViewCompletedOrdersComponent } from '../view-completed-orders-component/view-completed-orders-component.component';
 import { InventoryTransactionsComponent } from '../inventory-transactions/inventory-transactions.component';
-// import { CreateInventoryTransactionComponent } from '../create-inventory-transaction/create-inventory-transaction.component';
-// import { ViewInventoryTransactionsComponent } from '../view-inventory-transactions/view-inventory-transactions.component';
-// import { ViewAllProductsComponent } from '../view-all-products/view-all-products.component';
-// import { TabService } from '../../services/InventoryServices/tab.service';
-// import { ProfileComponent } from "../profile/profile.component";
-// import { ViewCompletedOrdersComponent} from '../view-completed-orders-component/view-completed-orders-component.component';
-// import { ViewRequestedOrdersComponent } from '../view-requested-orders-component/view-requested-orders-component.component';
+import { ReturnedOrdersComponent } from '../returned-orders/returned-orders.component';
 
 @Component({
   selector: 'app-inventorydashboard',
@@ -21,13 +15,12 @@ import { InventoryTransactionsComponent } from '../inventory-transactions/invent
   imports: [
     RouterModule,
     CommonModule,
-    // CreateInventoryTransactionComponent,
-    // ViewInventoryTransactionsComponent,
     ViewStocksComponent,
     ProfileComponent,
     ViewCompletedOrdersComponent,
     ViewRequestedOrdersComponent,
     InventoryTransactionsComponent,
+    ReturnedOrdersComponent
   ],
   templateUrl: './inventorydashboard.component.html',
   styleUrl: './inventorydashboard.component.css',
@@ -37,6 +30,7 @@ export class InventorydashboardComponent implements OnInit {
     | 'inventorytransactions'
     | 'requestedorders'
     | 'completedorders'
+    | 'returnedorders'
     | 'stocks'
     | 'profile' = 'inventorytransactions';
 
