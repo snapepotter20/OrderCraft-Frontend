@@ -41,15 +41,6 @@ export class InventoryService {
     });
   }
 
-  /**
-   * ✅ Fetch all transactions
-   */
-  // getTransactions(): Observable<InventoryTransaction[]> {
-  //    const headers = this.getAuthHeaders();
-  //   return this.http.get<InventoryTransaction[]>(`${this.baseUrl}/getalltransactions`,{
-  //     headers,
-  //   });
-  // }
 
   getTransactions(filters?: any): Observable<InventoryTransaction[]> {
     const headers = this.getAuthHeaders();

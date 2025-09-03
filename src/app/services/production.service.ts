@@ -6,6 +6,7 @@ export interface ProductionSchedule {
   psId: number;
   psStartDate: string;
   psEndDate: string;
+  psDeadline:string;
   psQuantity: number;
   psStatus: string;
   psProductId: {

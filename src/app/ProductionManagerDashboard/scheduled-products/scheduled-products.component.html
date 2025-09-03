@@ -44,6 +44,7 @@
           <th class="p-3 text-left">Qty</th>
           <th class="p-3 text-left">Start</th>
           <th class="p-3 text-left">End</th>
+          <th class="p-3 text-left">Deadline</th>
           <th class="p-3 text-left">Progress</th>
           <th class="p-3 text-left">Status</th>
           <th class="p-3 text-left">Action</th>
@@ -59,6 +60,7 @@
           <td class="p-3">{{ sp.psQuantity }}</td>
           <td class="p-3">{{ sp.psStartDate }}</td>
           <td class="p-3">{{ sp.psEndDate }}</td>
+          <td class="p-3">{{ sp.psDeadline || "Order scheduled ages back" }}</td>
 
           <!-- Progress bar -->
           <td class="p-3 w-40">
