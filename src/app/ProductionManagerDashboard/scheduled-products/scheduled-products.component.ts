@@ -155,4 +155,33 @@ export class ScheduledProductsComponent implements OnInit {
       ]
     };
   }
+
+  exportXLS() {
+  this.productionService.exportDeliveredXLS().subscribe({
+    next: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'delivered_products.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => console.error('Export XLS failed', err)
+  });
+}
+
+exportPDF() {
+  this.productionService.exportDeliveredPDF().subscribe({
+    next: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'delivered_products.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => console.error('Export PDF failed', err)
+  });
+}
+
 }

@@ -5,6 +5,22 @@
   <p class="text-gray-600 mb-6">
     Track the journey of each product through production.
   </p>
+  <!-- Export Buttons -->
+  <div class="flex justify-end gap-4 mb-4" *ngIf="scheduledProducts.length > 0">
+    <button
+      (click)="exportXLS()"
+      class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+    >
+      📗 Export XLS
+    </button>
+
+    <button
+      (click)="exportPDF()"
+      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+    >
+      📕 Export PDF
+    </button>
+  </div>
 
   <!-- Chart Section -->
   <div *ngIf="!loading && scheduledProducts.length > 0" class="mb-6">
@@ -60,7 +76,9 @@
           <td class="p-3">{{ sp.psQuantity }}</td>
           <td class="p-3">{{ sp.psStartDate }}</td>
           <td class="p-3">{{ sp.psEndDate }}</td>
-          <td class="p-3">{{ sp.psDeadline || "Order scheduled ages back" }}</td>
+          <td class="p-3">
+            {{ sp.psDeadline || "Order scheduled ages back" }}
+          </td>
 
           <!-- Progress bar -->
           <td class="p-3 w-40">

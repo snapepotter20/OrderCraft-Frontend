@@ -6,7 +6,7 @@ export interface ProductionSchedule {
   psId: number;
   psStartDate: string;
   psEndDate: string;
-  psDeadline:string;
+  psDeadline: string;
   psQuantity: number;
   psStatus: string;
   psProductId: {
@@ -14,7 +14,7 @@ export interface ProductionSchedule {
     productName: string;
     productUnitPrice: number;
   };
-   completedQuantity?: number; 
+  completedQuantity?: number;
 }
 
 export interface Category {
@@ -44,34 +44,53 @@ export interface DeliveredProduct {
   psProductId: Product;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductionService {
   private baseUrl = 'http://localhost:8094/api/orders';
 
-    private getAuthHeaders(): HttpHeaders {
-      const token = localStorage.getItem('token');
-      return new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-      });
-    }
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
 
   constructor(private http: HttpClient) {}
 
   getScheduledProducts(): Observable<ProductionSchedule[]> {
-     const headers = this.getAuthHeaders();
-    return this.http.get<ProductionSchedule[]>(`${this.baseUrl}/scheduled-products`, { headers });
+    const headers = this.getAuthHeaders();
+    return this.http.get<ProductionSchedule[]>(
+      `${this.baseUrl}/scheduled-products`,
+      { headers }
+    );
   }
 
-    dispatchProduct(psId: number): Observable<ProductionSchedule> {
-    return this.http.post<ProductionSchedule>(`${this.baseUrl}/dispatch/${psId}`, {});
+  dispatchProduct(psId: number): Observable<ProductionSchedule> {
+    return this.http.post<ProductionSchedule>(
+      `${this.baseUrl}/dispatch/${psId}`,
+      {}
+    );
   }
 
-  
   getDeliveredProducts(): Observable<DeliveredProduct[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<DeliveredProduct[]>(`${this.baseUrl}/delivered-products`, { headers });
+    return this.http.get<DeliveredProduct[]>(
+      `${this.baseUrl}/delivered-products`,
+      { headers }
+    );
+  }
+
+  exportDeliveredXLS(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export-delivered/xls`, {
+      responseType: 'blob',
+    });
+  }
+
+  exportDeliveredPDF(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export-delivered/pdf`, {
+      responseType: 'blob',
+    });
   }
 }
