@@ -1,0 +1,137 @@
+<div class="p-6 bg-white shadow-xl rounded-2xl">
+  <h2
+    class="text-xl font-bold mb-4 text-gray-800 flex justify-between items-center"
+  >
+    Manage Suppliers
+    <button
+      (click)="toggleForm()"
+      class="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+    >
+      {{ showForm ? "❌ Cancel" : "➕ Create Supplier" }}
+    </button>
+  </h2>
+
+  <!-- Create Supplier Form -->
+  <div
+    *ngIf="showForm"
+    class="mb-6 p-4 border rounded-lg bg-gray-50 shadow-inner"
+  >
+    <h3 class="text-lg font-semibold mb-4 text-gray-700">Supplier Details</h3>
+
+    <div class="grid grid-cols-2 gap-4">
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.supplier_name"
+        placeholder="Supplier Name"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.contact_name"
+        placeholder="Contact Name"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+      <input
+        type="email"
+        [(ngModel)]="newSupplier.contact_email"
+        placeholder="Contact Email"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.phone"
+        placeholder="Phone"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+
+      <!-- Address -->
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.address.addressStreet"
+        placeholder="Street"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none col-span-2"
+      />
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.address.addressCity"
+        placeholder="City"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+      <input
+        type="text"
+        [(ngModel)]="newSupplier.address.addressState"
+        placeholder="State"
+        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+      />
+    </div>
+
+    <button
+      (click)="saveSupplier()"
+      class="mt-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition"
+    >
+      ✅ Save Supplier
+    </button>
+  </div>
+
+  <!-- Supplier List -->
+  <div *ngIf="loading" class="text-blue-600">Loading suppliers...</div>
+  <div *ngIf="error" class="text-red-600">{{ error }}</div>
+
+  <div class="overflow-x-auto rounded-lg shadow">
+    <table
+      *ngIf="!loading && suppliers.length > 0"
+      class="w-full border-collapse"
+    >
+      <thead class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <tr>
+          <th class="p-3 text-left">ID</th>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Contact</th>
+          <th class="p-3 text-left">Email</th>
+          <th class="p-3 text-left">Phone</th>
+          <th class="p-3 text-left">Address</th>
+          <th class="p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let s of suppliers"
+          class="odd:bg-gray-50 even:bg-white hover:bg-blue-50 transition"
+        >
+          <td class="p-3 text-gray-700">{{ s.supplier_id }}</td>
+          <td class="p-3 font-medium text-gray-900">{{ s.supplier_name }}</td>
+          <td class="p-3 text-gray-700">{{ s.contact_name }}</td>
+          <td class="p-3 text-gray-700">{{ s.contact_email }}</td>
+          <td class="p-3 text-gray-700">{{ s.phone }}</td>
+          <td class="p-3 text-gray-700">
+            {{ s.address?.addressStreet }}, {{ s.address?.addressCity }},
+            {{ s.address?.addressState }}
+          </td>
+          <td class="p-2 border">
+            <div class="flex items-center gap-2">
+              <button
+                class="bg-yellow-500 text-white px-3 py-1 rounded-md shadow hover:bg-yellow-600 transition"
+                (click)="editSupplier(s)"
+              >
+                Edit
+              </button>
+              <button
+                class="bg-red-600 text-white px-3 py-1 rounded-md shadow hover:bg-red-700 transition"
+                (click)="deleteSupplier(s.supplier_id)"
+              >
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    *ngIf="!loading && suppliers.length === 0"
+    class="text-gray-600 mt-4 text-center"
+  >
+    🚫 No suppliers found.
+  </div>
+</div>

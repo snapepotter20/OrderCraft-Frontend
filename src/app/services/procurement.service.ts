@@ -121,4 +121,29 @@ export class ProcurementService {
   });
 }
 
+// procurement.service.ts
+getAllSuppliers(): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.BASE_URL}/suppliers/getallsuppliers`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+createSupplier(supplier: any): Observable<any> {
+  return this.http.post(
+    `${this.BASE_URL}/suppliers/createsupplier`,
+    supplier,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+updateSupplier(id: number, supplier: any) {
+  return this.http.put<any>(`${this.BASE_URL}/suppliers/${id}`, supplier);
+}
+
+deleteSupplier(id: number) {
+  return this.http.delete(`${this.BASE_URL}/suppliers/${id}`);
+}
+
+
 }

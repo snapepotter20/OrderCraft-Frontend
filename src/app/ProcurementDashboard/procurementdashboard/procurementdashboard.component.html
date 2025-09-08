@@ -24,6 +24,15 @@
         👥 View Orders
       </div>
       <div
+        (click)="selectedTab = 'view suppliers'"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+        [ngClass]="{
+          'bg-white text-blue-700 font-bold shadow': selectedTab === 'view suppliers'
+        }"
+      >
+        👥 Manage Suppliers
+      </div>
+      <div
         (click)="selectedTab = 'profile'"
         class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
         [ngClass]="{
@@ -45,6 +54,7 @@
   <main class="flex-1 p-8 overflow-auto">
     <app-create-order *ngIf="selectedTab === 'create'"></app-create-order>
     <app-view-order *ngIf="selectedTab === 'view'"></app-view-order>
+    <app-manage-suppliers *ngIf="selectedTab === 'view suppliers'"></app-manage-suppliers>
     <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
   </main>
 </div>
