@@ -5,7 +5,7 @@
     Manage Suppliers
     <button
       (click)="toggleForm()"
-      class="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+      class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium px-4 py-2 rounded-full shadow-md hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-200 ease-in-out"
     >
       {{ showForm ? "❌ Cancel" : "➕ Create Supplier" }}
     </button>
@@ -64,12 +64,37 @@
         class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
       />
     </div>
+    <!-- Rating -->
+    <div class="col-span-2 mt-4">
+      <label class="block text-gray-700 font-medium mb-1">Rating</label>
+      <div class="flex gap-1">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <span
+            (click)="newSupplier.rating = star"
+            class="cursor-pointer text-3xl transition"
+            [ngClass]="
+              star <= newSupplier.rating
+                ? 'text-yellow-500'
+                : 'text-gray-300 hover:text-yellow-400'
+            "
+          >
+            ★
+          </span>
+        </ng-container>
+      </div>
+    </div>
 
-    <button
+    <!-- <button
       (click)="saveSupplier()"
       class="mt-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition"
     >
       ✅ Save Supplier
+    </button> -->
+    <button
+      (click)="saveSupplier()"
+      class="mt-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition"
+    >
+      {{ isEditMode ? "✏️ Update Supplier" : "✅ Save Supplier" }}
     </button>
   </div>
 
@@ -90,6 +115,7 @@
           <th class="p-3 text-left">Email</th>
           <th class="p-3 text-left">Phone</th>
           <th class="p-3 text-left">Address</th>
+          <th class="p-2 border">Rating</th>
           <th class="p-3 text-center">Actions</th>
         </tr>
       </thead>
@@ -107,6 +133,17 @@
             {{ s.address?.addressStreet }}, {{ s.address?.addressCity }},
             {{ s.address?.addressState }}
           </td>
+          <td class="p-2 border">
+            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+              <span
+                [ngClass]="
+                  star <= s.rating ? 'text-yellow-500' : 'text-gray-300'
+                "
+                >★</span
+              >
+            </ng-container>
+          </td>
+
           <td class="p-2 border">
             <div class="flex items-center gap-2">
               <button
