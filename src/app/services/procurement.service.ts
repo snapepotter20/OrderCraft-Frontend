@@ -88,7 +88,9 @@ export class ProcurementService {
 
   getDeliveryTrackingByOrderId(orderId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.get<any>(`${this.BASE_URL}/delivery-tracking/${orderId}`, { headers });
+    return this.http.get<any>(`${this.BASE_URL}/delivery-tracking/${orderId}`, {
+      headers,
+    });
   }
 
   cancelOrder(orderId: number): Observable<any> {
@@ -116,34 +118,48 @@ export class ProcurementService {
   }
 
   createReturnOrder(payload: any) {
-  return this.http.post(`${this.BASE_URL}/returnorder`, payload,{
-     headers: { 'Content-Type': 'application/json' }
-  });
-}
+    return this.http.post(`${this.BASE_URL}/returnorder`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
-// procurement.service.ts
-getAllSuppliers(): Observable<any[]> {
-  return this.http.get<any[]>(
-    `${this.BASE_URL}/suppliers/getallsuppliers`,
-    { headers: this.getAuthHeaders() }
-  );
-}
+  // procurement.service.ts
+  getAllSuppliers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.BASE_URL}/suppliers/getallsuppliers`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
 
-createSupplier(supplier: any): Observable<any> {
-  return this.http.post(
-    `${this.BASE_URL}/suppliers/createsupplier`,
-    supplier,
-    { headers: this.getAuthHeaders() }
-  );
-}
+  createSupplier(supplier: any): Observable<any> {
+    return this.http.post(
+      `${this.BASE_URL}/suppliers/createsupplier`,
+      supplier,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
-updateSupplier(id: number, supplier: any) {
-  return this.http.put<any>(`${this.BASE_URL}/suppliers/${id}`, supplier);
-}
+  updateSupplier(id: number, supplier: any) {
+    return this.http.put<any>(`${this.BASE_URL}/suppliers/${id}`, supplier);
+  }
 
-deleteSupplier(id: number) {
-  return this.http.delete(`${this.BASE_URL}/suppliers/${id}`);
-}
+  deleteSupplier(id: number) {
+    return this.http.delete(`${this.BASE_URL}/suppliers/${id}`);
+  }
 
+  uploadContract(supplierId: number, formData: FormData): Observable<any> {
+    return this.http.post(
+      `${this.BASE_URL}/suppliers/${supplierId}/uploadContract`,
+      formData,
+      { responseType: 'text' }
+    );
+  }
 
+  downloadContract(supplierId: number): Observable<Blob> {
+    return this.http.get(
+      `${this.BASE_URL}/suppliers/${supplierId}/downloadContract`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
 }

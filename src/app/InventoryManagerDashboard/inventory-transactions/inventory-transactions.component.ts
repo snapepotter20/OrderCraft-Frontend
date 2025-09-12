@@ -151,7 +151,7 @@ export class InventoryTransactionsComponent implements OnInit {
     });
   }
 
-   exportPdf() {
+  exportPdf() {
     const filters = this.filtersForm.value;
     this.inventoryService.exportPdf(filters).subscribe({
       next: (blob) => {
@@ -186,18 +186,18 @@ export class InventoryTransactionsComponent implements OnInit {
   }
 
   // inventory-transactions.component.ts
-selectedTransaction: InventoryTransaction | null = null;
-showModal = false;
+  selectedTransaction: InventoryTransaction | null = null;
+  showModal = false;
 
-openModal(tx: InventoryTransaction) {
-  this.selectedTransaction = tx;
-  this.showModal = true;
+  openModal(tx: InventoryTransaction) {
+    this.selectedTransaction = tx;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedTransaction = null;
+  }
 }
 
-closeModal() {
-  this.showModal = false;
-  this.selectedTransaction = null;
-}
 
-
-}

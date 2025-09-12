@@ -17,30 +17,32 @@
     </thead>
     <tbody>
       <tr
-        *ngFor="let product of demandedProducts"
+        *ngFor="let demand of demandedProducts"
         class="hover:bg-gray-100 transition"
       >
-        <td class="px-4 py-2 border-t">{{ product.productName }}</td>
-        <td class="px-4 py-2 border-t">₹{{ product.productUnitPrice }}</td>
+        <td class="px-4 py-2 border-t">{{ demand.product.productName }}</td>
+        <td class="px-4 py-2 border-t">
+          ₹{{ demand.product.productUnitPrice }}
+        </td>
         <td class="px-4 py-2 border-t font-semibold text-red-600">
-          {{ product.demandedQuantity }}
+          {{ demand.demandQuantity }}
         </td>
         <td class="px-4 py-3 text-center">
           <div class="flex justify-left gap-2">
             <!-- Schedule button -->
             <button
               class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              [disabled]="product.scheduleStatus && product.scheduleStatus !== 'NONE'"
-              (click)="openScheduleModal(product)"
+              [disabled]="demand.demandStatus && demand.demandStatus !== 'PENDING'"
+              (click)="openScheduleModal(demand)"
             >
               Schedule Production
-            </button> 
+            </button>
 
             <!-- Deliver button -->
             <button
               class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              [disabled]="product.scheduleStatus !== 'DISPATCHED'"
-              (click)="deliverProduct(product)"
+              [disabled]="demand.demandStatus !== 'DISPATCHED'"
+              (click)="deliverProduct(demand)"
             >
               Deliver
             </button>

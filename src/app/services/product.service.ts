@@ -3,12 +3,24 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export interface DemandedProduct {
-  productId: number;
-  productName: string;
-  productUnitPrice: number;
-  demandedQuantity: number;
-  scheduleStatus?: 'NONE' | 'SCHEDULED' | 'READY' | 'IN_PROGRESS' | 'DISPATCHED';
+export interface ProductDemand {
+  demandId: number;
+  product: {
+    productId: number;
+    productName: string;
+    productUnitPrice: number;
+  };
+  user: {
+    userId: number;
+    username: string;
+  };
+  demandQuantity: number;
+  demandDate: string; // ISO date string from backend
+  demandStatus: "NONE" | "PENDING" | "SCHEDULED" | "FULFILLED" | "DISPATCHED";
+  schedule?: {
+    psId: number;
+    psStatus: string;
+  } | null;
 }
 
 @Injectable({
@@ -72,9 +84,12 @@ export class ProductService {
     );
   }
 
-    addCategory(category: { categoryName: string }): Observable<any> {
+  addCategory(category: { categoryName: string }): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post<any>(`http://localhost:8094/api/product/addcategory`, category);
+    return this.http.post<any>(
+      `http://localhost:8094/api/product/addcategory`,
+      category
+    );
   }
 
   // product.service.ts
@@ -86,30 +101,38 @@ export class ProductService {
   //   );
   // }
 
-  updateDemandedQuantity(productId: number, demandedQuantity: number, user: any) {
-  const headers = this.getAuthHeaders();
-  return this.http.patch<any>(
-    `${this.baseUrl}/updateDemand/${productId}?demandedQuantity=${demandedQuantity}&userId=${user.user_id}`,
-    {}, // no request body needed
-    { headers }
-  );
-}
-
+  updateDemandedQuantity(
+    productId: number,
+    demandedQuantity: number,
+    user: any
+  ) {
+    const headers = this.getAuthHeaders();
+    return this.http.patch<any>(
+      `${this.baseUrl}/updateDemand/${productId}?demandedQuantity=${demandedQuantity}&userId=${user.user_id}`,
+      {}, // no request body needed
+      { headers }
+    );
+  }
 
   getDemandedProductsCount() {
     return this.http.get<number>(`${this.baseUrl}/demanded/count`);
   }
 
-   getDemandedProducts(): Observable<DemandedProduct[]> {
-    return this.http.get<DemandedProduct[]>(`${this.baseUrl}/demanded`);
+  getDemandedProducts(): Observable<ProductDemand[]> {
+    return this.http.get<ProductDemand[]>(
+      `${this.baseUrl}/getalldemandedproducts`
+    );
   }
 
   scheduleProduction(productId: number, data: any) {
-  return this.http.post(`${this.baseUrl}/schedule-production/${productId}`, data);
-}
+    return this.http.post(
+      `${this.baseUrl}/schedule-production/${productId}`,
+      data
+    );
+  }
 
-deliverProduct(productId: number) {
-  return this.http.post(`${this.baseUrl}/deliver-product/${productId}`, {});
-}
-
+  deliverProduct(demandId: number) {
+    const headers = this.getAuthHeaders();
+    return this.http.patch(`${this.baseUrl}/deliverDemand/${demandId}`, {headers});
+  }
 }

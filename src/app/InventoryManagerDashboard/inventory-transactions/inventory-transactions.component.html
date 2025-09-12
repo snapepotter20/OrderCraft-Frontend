@@ -236,7 +236,6 @@
   </div>
 </div>
 
-
 <!-- Transaction Modal -->
 <!-- Transaction Modal -->
 <div
@@ -247,7 +246,9 @@
     class="bg-white/95 rounded-3xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden transform transition-all duration-300 scale-95 animate-fadeInUp"
   >
     <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center">
+    <div
+      class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center"
+    >
       <h3 class="text-lg font-semibold">Transaction Details</h3>
       <button
         class="text-white hover:text-gray-200 transition"
@@ -262,13 +263,22 @@
       <div *ngIf="selectedTransaction">
         <!-- Transaction Info -->
         <div class="mb-6">
-          <h4 class="text-xl font-bold mb-2 text-gray-800">📑 Transaction Info</h4>
+          <h4 class="text-xl font-bold mb-2 text-gray-800">
+            📑 Transaction Info
+          </h4>
           <div class="grid grid-cols-2 gap-4">
             <p><strong>ID:</strong> {{ selectedTransaction.transactionId }}</p>
-            <p><strong>Date:</strong> {{ selectedTransaction.transactionDate | date }}</p>
-            <p><strong>Type:</strong> {{ selectedTransaction.transactionType }}</p>
+            <p>
+              <strong>Date:</strong>
+              {{ selectedTransaction.transactionDate | date }}
+            </p>
+            <p>
+              <strong>Type:</strong> {{ selectedTransaction.transactionType }}
+            </p>
             <p><strong>Quantity:</strong> {{ selectedTransaction.quantity }}</p>
-            <p class="col-span-2"><strong>Reference:</strong> {{ selectedTransaction.reference }}</p>
+            <p class="col-span-2">
+              <strong>Reference:</strong> {{ selectedTransaction.reference }}
+            </p>
           </div>
         </div>
 
@@ -276,11 +286,26 @@
         <div class="mb-6 border-t pt-4">
           <h4 class="text-xl font-bold mb-2 text-gray-800">📦 Product Info</h4>
           <div class="grid grid-cols-2 gap-4">
-            <p><strong>Name:</strong> {{ selectedTransaction.product?.productName }}</p>
-            <p><strong>Description:</strong> {{ selectedTransaction.product?.productDescription }}</p>
-            <p><strong>Category:</strong> {{ selectedTransaction.product?.category?.categoryName }}</p>
-            <p><strong>Price:</strong> {{ selectedTransaction.product?.productUnitPrice | currency }}</p>
-            <p><strong>Available Qty:</strong> {{ selectedTransaction.product?.productQuantity }}</p>
+            <p>
+              <strong>Name:</strong>
+              {{ selectedTransaction.product?.productName }}
+            </p>
+            <p>
+              <strong>Description:</strong>
+              {{ selectedTransaction.product?.productDescription }}
+            </p>
+            <p>
+              <strong>Category:</strong>
+              {{ selectedTransaction.product?.category?.categoryName }}
+            </p>
+            <p>
+              <strong>Price:</strong>
+              {{ selectedTransaction.product?.productUnitPrice | currency }}
+            </p>
+            <p>
+              <strong>Available Qty:</strong>
+              {{ selectedTransaction.product?.productQuantity }}
+            </p>
           </div>
         </div>
 
@@ -288,10 +313,19 @@
         <div class="mb-6 border-t pt-4">
           <h4 class="text-xl font-bold mb-2 text-gray-800">👤 Performed By</h4>
           <div class="grid grid-cols-2 gap-4">
-            <p><strong>User:</strong> {{ selectedTransaction.userId?.username }}</p>
-            <p><strong>Email:</strong> {{ selectedTransaction.userId?.email }}</p>
-            <p><strong>Role:</strong> {{ selectedTransaction.userId?.role?.roleName }}</p>
-            <p><strong>Phone:</strong> {{ selectedTransaction.userId?.phoneno }}</p>
+            <p>
+              <strong>User:</strong> {{ selectedTransaction.userId?.username }}
+            </p>
+            <p>
+              <strong>Email:</strong> {{ selectedTransaction.userId?.email }}
+            </p>
+            <p>
+              <strong>Role:</strong>
+              {{ selectedTransaction.userId?.role?.roleName }}
+            </p>
+            <p>
+              <strong>Phone:</strong> {{ selectedTransaction.userId?.phoneno }}
+            </p>
             <p class="col-span-2">
               <strong>Address:</strong>
               {{ selectedTransaction.userId?.address?.addressStreet }},

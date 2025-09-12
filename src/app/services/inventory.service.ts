@@ -41,7 +41,6 @@ export class InventoryService {
     });
   }
 
-
   getTransactions(filters?: any): Observable<InventoryTransaction[]> {
     const headers = this.getAuthHeaders();
     let params = new HttpParams();
@@ -59,6 +58,7 @@ export class InventoryService {
       { headers, params }
     );
   }
+
 
   // ✅ Export PDF
   exportPdf(filters?: any): Observable<Blob> {
@@ -108,31 +108,36 @@ export class InventoryService {
   }
 
   approveReturnOrder(returnOrderId: number): Observable<any> {
-  const headers = this.getAuthHeaders();
-  return this.http.put<any>(
-    `${this.baseUrl}/approveReturnOrder/${returnOrderId}`,
-    {},
-    { headers }
-  );
-}
-
-getFilteredReturnOrders(filters?: any): Observable<any> {
-  const headers = this.getAuthHeaders();
-  let params = new HttpParams();
-
-  if (filters) {
-    Object.keys(filters).forEach((key) => {
-      if (filters[key]) {
-        params = params.set(key, filters[key]);
-      }
-    });
+    const headers = this.getAuthHeaders();
+    return this.http.put<any>(
+      `${this.baseUrl}/approveReturnOrder/${returnOrderId}`,
+      {},
+      { headers }
+    );
   }
 
-  return this.http.get(`${this.baseUrl.replace('/inventory', '')}/returnorder/filter`, {
-    headers,
-    params,
-  });
+  getFilteredReturnOrders(filters?: any): Observable<any> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+
+    if (filters) {
+      Object.keys(filters).forEach((key) => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+
+    return this.http.get(
+      `${this.baseUrl.replace('/inventory', '')}/returnorder/filter`,
+      {
+        headers,
+        params,
+      }
+    );
+  }
 }
 
 
-}
+
+

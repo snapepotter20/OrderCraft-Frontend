@@ -6,6 +6,12 @@
     Create New User
   </h2>
 
+  <!-- Mandatory fields note -->
+  <div class="text-sm text-gray-600 mb-6 flex items-center gap-1">
+    <span class="text-red-500">*</span>
+    <span>All fields are mandatory</span>
+  </div>
+
   <!-- Success & Error Messages -->
   <div *ngIf="successMessage" class="text-green-600 font-medium mb-4">
     {{ successMessage }}
