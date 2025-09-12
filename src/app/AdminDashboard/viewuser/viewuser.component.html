@@ -39,10 +39,10 @@
               {{ user.role.roleName }}
             </span>
           </td>
-           <td>
-             <div class="flex items-center ml-4">
+          <td>
+            <div class="flex items-center ml-4">
               <!-- Unlock Button -->
-              <button
+              <!-- <button
                 (click)="onUnlockClick(user)"
                 [disabled]="!isUserLocked(user)"
                 [style.color]="isUserLocked(user) ? 'red' : 'green'"
@@ -50,6 +50,15 @@
                 [title]="isUserLocked(user) ? 'Unlock Account' : 'Account Active'"
               >
                 {{ isUserLocked(user) ? 'Unlock Account' : 'Active' }}
+              </button> -->
+
+              <button
+                (click)="onToggleLockClick(user)"
+                class="font-semibold px-3 py-1 rounded text-sm border border-current"
+                [style.color]="isUserLocked(user) ? 'red' : 'green'"
+                [title]="isUserLocked(user) ? 'Unlock Account' : 'Lock Account'"
+              >
+                {{ isUserLocked(user) ? "Unlock Account" : "Active" }}
               </button>
             </div>
           </td>
