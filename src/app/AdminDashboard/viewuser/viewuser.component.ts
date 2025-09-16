@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 
 interface Role {
@@ -29,17 +30,25 @@ interface User {
 @Component({
   selector: 'app-viewuser',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
   templateUrl: './viewuser.component.html',
   styleUrl: './viewuser.component.css',
 })
 export class ViewuserComponent implements OnInit {
   allusers: User[] = [];
+  filteredUsers: User[] = [];
   roles: Role[] = [];
 
   isEditModalOpen = false;
   editForm!: FormGroup;
   selectedUserId: number | null = null;
+
+  // 🔍 Filters
+  filters = {
+    username: '',
+    role: '',
+    status: '',
+  };
 
   constructor(private userService: UserService, private fb: FormBuilder) {}
 
@@ -60,6 +69,7 @@ export class ViewuserComponent implements OnInit {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.allusers = data;
+        this.filteredUsers = [...this.allusers];
       },
       error: (err) => {
         console.error('Failed to fetch users', err);
@@ -78,6 +88,26 @@ export class ViewuserComponent implements OnInit {
     });
   }
 
+  applyFilters(): void {
+    this.filteredUsers = this.allusers.filter((user) => {
+      const matchesUsername =
+        this.filters.username === '' ||
+        user.username
+          .toLowerCase()
+          .includes(this.filters.username.toLowerCase());
+
+      const matchesRole =
+        this.filters.role === '' || user.role?.roleName === this.filters.role;
+
+      const matchesStatus =
+        this.filters.status === '' ||
+        (this.filters.status === 'active' && !this.isUserLocked(user)) ||
+        (this.filters.status === 'locked' && this.isUserLocked(user));
+
+      return matchesUsername && matchesRole && matchesStatus;
+    });
+  }
+
   onEdit(user: User): void {
     this.isEditModalOpen = true;
     this.selectedUserId = user.user_id;
@@ -91,26 +121,18 @@ export class ViewuserComponent implements OnInit {
     });
   }
 
-  // onDelete(user: User): void {
-  //   this.userService.deleteUser(user.user_id).subscribe({
-  //     next: () => this.fetchAllUsers(),
-  //     error: (err) => console.error('Delete failed', err)
-  //   });
-  // }
-
   onDelete(user: any): void {
     const confirmed = confirm(
       `Are you sure you want to delete user "${user.username}"?`
     );
     if (confirmed) {
-      // Call the delete API or service
       this.userService.deleteUser(user.user_id).subscribe({
         next: () => {
           alert(`User "${user.username}" deleted successfully.`);
-          // Refresh user list or remove the user from the array
           this.allusers = this.allusers.filter(
             (u) => u.user_id !== user.user_id
           );
+          this.applyFilters();
         },
         error: (err) => {
           console.error('Error deleting user:', err);
@@ -149,34 +171,6 @@ export class ViewuserComponent implements OnInit {
     return lockedUntil > new Date();
   }
 
-  onUnlockClick(user: User): void {
-    if (this.isUserLocked(user)) {
-      const confirmed = window.confirm(
-        `Are you sure you want to unlock ${user.username}'s account?`
-      );
-      if (confirmed) {
-        this.toggleLockout(user);
-      }
-    }
-  }
-
-  toggleLockout(user: User): void {
-    if (this.isUserLocked(user)) {
-      this.userService.unlockUser(user.user_id).subscribe({
-        next: () => {
-          alert(`User ${user.username} unlocked successfully`);
-          this.fetchAllUsers();
-        },
-        error: () => {
-          alert(`Failed to unlock user ${user.username}`);
-        },
-      });
-    } else {
-      alert('User is already active');
-    }
-  }
-
-  // ✨ Allow only numbers on keypress
   allowOnlyNumbers(event: KeyboardEvent): void {
     const charCode = event.key.charCodeAt(0);
     if (charCode < 48 || charCode > 57) {
@@ -186,7 +180,6 @@ export class ViewuserComponent implements OnInit {
 
   onToggleLockClick(user: User): void {
     if (this.isUserLocked(user)) {
-      // Unlock flow
       const confirmed = window.confirm(
         `Are you sure you want to unlock ${user.username}'s account?`
       );
@@ -202,7 +195,6 @@ export class ViewuserComponent implements OnInit {
         });
       }
     } else {
-      // Lock flow
       const confirmed = window.confirm(
         `Are you sure you want to lock ${user.username}'s account?`
       );
@@ -218,5 +210,10 @@ export class ViewuserComponent implements OnInit {
         });
       }
     }
+  }
+
+  clearFilters(): void {
+    this.filters = { username: '', role: '', status: '' };
+    this.filteredUsers = [...this.allusers];
   }
 }

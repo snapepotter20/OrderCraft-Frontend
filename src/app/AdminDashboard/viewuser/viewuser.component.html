@@ -1,6 +1,47 @@
 <div class="bg-white rounded-xl shadow-2xl p-8">
   <h2 class="text-3xl font-bold text-gray-800 mb-6">All Users</h2>
 
+  <!-- 🔍 Filter Section -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <!-- Username Search -->
+    <input
+      type="text"
+      placeholder="Search by Username"
+      [(ngModel)]="filters.username"
+      (input)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    />
+
+    <!-- Role Filter -->
+    <select
+      [(ngModel)]="filters.role"
+      (change)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    >
+      <option value="">All Roles</option>
+      <option *ngFor="let role of roles" [value]="role.roleName">
+        {{ role.roleName }}
+      </option>
+    </select>
+
+    <!-- Status Filter -->
+    <select
+      [(ngModel)]="filters.status"
+      (change)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    >
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="locked">Locked</option>
+    </select>
+    <button
+      (click)="clearFilters()"
+      class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
+    >
+      Clear
+    </button>
+  </div>
+
   <div class="overflow-x-auto">
     <table class="min-w-full text-sm text-gray-800">
       <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wide">
@@ -15,7 +56,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let user of allusers"
+          *ngFor="let user of filteredUsers"
           class="hover:bg-gray-50 transition duration-200"
         >
           <td class="px-6 py-4">{{ user.username }}</td>
@@ -41,17 +82,6 @@
           </td>
           <td>
             <div class="flex items-center ml-4">
-              <!-- Unlock Button -->
-              <!-- <button
-                (click)="onUnlockClick(user)"
-                [disabled]="!isUserLocked(user)"
-                [style.color]="isUserLocked(user) ? 'red' : 'green'"
-                class="font-semibold px-3 py-1 rounded text-sm border border-current"
-                [title]="isUserLocked(user) ? 'Unlock Account' : 'Account Active'"
-              >
-                {{ isUserLocked(user) ? 'Unlock Account' : 'Active' }}
-              </button> -->
-
               <button
                 (click)="onToggleLockClick(user)"
                 class="font-semibold px-3 py-1 rounded text-sm border border-current"
