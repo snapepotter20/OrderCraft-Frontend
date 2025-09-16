@@ -130,6 +130,12 @@ export class ProcurementService {
     });
   }
 
+    getAllCustomers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.BASE_URL}/getallcustomers`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
   createSupplier(supplier: any): Observable<any> {
     return this.http.post(
       `${this.BASE_URL}/suppliers/createsupplier`,

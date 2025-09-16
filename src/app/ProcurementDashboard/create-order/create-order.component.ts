@@ -29,10 +29,14 @@ import { DummyPaymentComponent } from '../dummy-payment/dummy-payment.component'
 export class CreateOrderComponent {
   orderForm: FormGroup;
 
-  products: { id: number; name: string }[] = [];
-  rawMaterials: { id: number; name: string }[] = [];
-  showPaymentModal = false; // To toggle modal visibility
-  pendingPayload: any = null; // Temporarily holds order payload
+  products: { id: number; name: string; productUnitPrice: number }[] = [];
+  rawMaterials: { id: number; name: string; price: number }[] = [];
+  customers: { id: number; name: string }[] = [];
+  suppliers: { id: number; name: string }[] = [];
+
+  showPaymentModal = false;
+  pendingPayload: any = null;
+  totalAmount = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -52,76 +56,64 @@ export class CreateOrderComponent {
     );
 
     this.fetchDropdownData();
-    this.addItem(); // Initialize with one item
+    this.addItem();
   }
 
-  // Getter for items FormArray
   get items(): FormArray {
     return this.orderForm.get('items') as FormArray;
   }
 
-  // Checks if orderType is CUSTOMER
   isCustomerOrder(): boolean {
     return this.orderForm.get('orderType')?.value === 'CUSTOMER';
   }
 
-  // Handles orderType changes
   onOrderTypeChange(): void {
     const customerIdControl = this.orderForm.get('customerId');
+    const supplierIdControl = this.orderForm.get('supplierId');
 
     if (this.isCustomerOrder()) {
-      customerIdControl?.setValidators([
-        Validators.required,
-        Validators.min(1),
-      ]);
+      customerIdControl?.setValidators([Validators.required, Validators.min(1)]);
     } else {
       customerIdControl?.clearValidators();
     }
 
-    customerIdControl?.updateValueAndValidity();
+    // supplier always required
+    supplierIdControl?.setValidators([Validators.required, Validators.min(1)]);
 
-    // Reset item list when order type changes
+    customerIdControl?.updateValueAndValidity();
+    supplierIdControl?.updateValueAndValidity();
+
     this.items.clear();
     this.addItem();
   }
 
-  // Creates a FormGroup for one item row
   createItemGroup(): FormGroup {
-    const group = this.fb.group({
+    return this.fb.group({
       quantity: [1, [Validators.required, Validators.min(1)]],
-      cost: [1, [Validators.required, Validators.min(0)]],
-      productId: [null], // ✅ Add this
+      cost: [0, [Validators.required, Validators.min(0)]],
+      unitPrice: [0],
+      productId: [null],
       rawMaterialId: [null],
     });
-
-    // Add correct control based on orderType
-    // if (this.isCustomerOrder()) {
-    //   group.addControl('productId', this.fb.control('', Validators.required));
-    // } else {
-    //   group.addControl('rawMaterialId', this.fb.control('', Validators.required));
-    // }
-
-    return group;
   }
 
-  // Adds a new item row
   addItem(): void {
     this.items.push(this.createItemGroup());
   }
 
-  // Removes an item row
   removeItem(index: number): void {
     if (this.items.length > 1) {
       this.items.removeAt(index);
+      this.calculateTotalAmount();
     }
   }
 
-  // Fetch dropdown data for products and raw materials
   fetchDropdownData(): void {
     this.procurementService.getAllProducts().subscribe((data) => {
       this.products = data.map((p: any) => ({
         id: p.productId,
         name: p.productName,
+        productUnitPrice: p.productUnitPrice || 0,
       }));
     });
 
@@ -129,18 +121,75 @@ export class CreateOrderComponent {
       this.rawMaterials = data.map((r: any) => ({
         id: r.raw_material_id,
         name: r.material_name,
+        price: r.price || 0,
+      }));
+    });
+
+    this.procurementService.getAllCustomers().subscribe((data) => {
+      this.customers = data.map((c: any) => ({
+        id: c.cust_id,
+        name: c.cust_name,
+      }));
+    });
+
+    this.procurementService.getAllSuppliers().subscribe((data) => {
+      this.suppliers = data.map((s: any) => ({
+        id: s.supplier_id,
+        name: s.supplier_name,
       }));
     });
   }
 
-  totalAmount = 0;
+  // Called when product is selected
+  onProductSelect(index: number): void {
+    const itemGroup = this.items.at(index) as FormGroup;
+    const productId = itemGroup.get('productId')?.value;
+
+    const selectedProduct = this.products.find(p => p.id === productId);
+    if (selectedProduct) {
+      const unitPrice = selectedProduct.productUnitPrice || 0;
+      itemGroup.get('unitPrice')?.setValue(unitPrice);
+      const quantity = itemGroup.get('quantity')?.value || 1;
+      itemGroup.get('cost')?.setValue(quantity * unitPrice);
+    } else {
+      itemGroup.get('unitPrice')?.setValue(0);
+      itemGroup.get('cost')?.setValue(0);
+    }
+    this.calculateTotalAmount();
+  }
+
+  // Called when raw material is selected
+  onRawMaterialSelect(index: number): void {
+    const itemGroup = this.items.at(index) as FormGroup;
+    const rawMaterialId = itemGroup.get('rawMaterialId')?.value;
+
+    const selectedMaterial = this.rawMaterials.find(r => r.id === rawMaterialId);
+    if (selectedMaterial) {
+      const unitPrice = selectedMaterial.price || 0;
+      itemGroup.get('unitPrice')?.setValue(unitPrice);
+      const quantity = itemGroup.get('quantity')?.value || 1;
+      itemGroup.get('cost')?.setValue(quantity * unitPrice);
+    } else {
+      itemGroup.get('unitPrice')?.setValue(0);
+      itemGroup.get('cost')?.setValue(0);
+    }
+    this.calculateTotalAmount();
+  }
+
+  // Called when quantity changes
+  onQuantityChange(index: number): void {
+    const itemGroup = this.items.at(index) as FormGroup;
+    const quantity = itemGroup.get('quantity')?.value || 1;
+    const unitPrice = itemGroup.get('unitPrice')?.value || 0;
+    itemGroup.get('cost')?.setValue(quantity * unitPrice);
+    this.calculateTotalAmount();
+  }
 
   calculateTotalAmount(): void {
     const items = this.orderForm.value.items || [];
     this.totalAmount = items.reduce((sum: number, item: any) => {
       const cost = Number(item.cost) || 0;
-      const quantity = Number(item.quantity) || 0;
-      return sum + cost * quantity;
+      return sum + cost;
     }, 0);
   }
 
@@ -168,18 +217,14 @@ export class CreateOrderComponent {
     this.pendingPayload = null;
   }
 
-  // Handles order form submission
   submitOrder(): void {
-     console.log('Submit clicked');
     if (this.orderForm.invalid) {
       this.orderForm.markAllAsTouched();
       return;
     }
 
-    // Calculate amount from item cost before opening modal
     this.calculateTotalAmount();
 
-    // Prepare payload and show modal
     const formValue = this.orderForm.value;
     const isCustomer = formValue.orderType === 'CUSTOMER';
 
@@ -203,8 +248,8 @@ export class CreateOrderComponent {
       orderDate: formValue.orderDate,
       expectedDelivery: formValue.expectedDelivery,
       deliveryStatus: formValue.deliveryStatus,
-      supplier: { supplier_id: formValue.supplierId },
       items: itemsPayload,
+      supplier: { supplier_id: formValue.supplierId },
     };
 
     if (isCustomer) {
@@ -215,7 +260,6 @@ export class CreateOrderComponent {
     this.showPaymentModal = true;
   }
 
-  // Resets the form after submission
   resetForm(): void {
     this.orderForm.reset({
       orderType: '',

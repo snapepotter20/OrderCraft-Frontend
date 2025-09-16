@@ -10,49 +10,33 @@
           formControlName="orderType"
           (change)="onOrderTypeChange()"
           class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('orderType')?.invalid &&
-              orderForm.get('orderType')?.touched
-          }"
         >
           <option value="" disabled>Select Type</option>
           <option value="CUSTOMER">CUSTOMER</option>
           <option value="SUPPLIER">SUPPLIER</option>
         </select>
-        <div
-          *ngIf="
-            orderForm.get('orderType')?.touched &&
-            orderForm.get('orderType')?.hasError('required')
-          "
-          class="text-red-500 text-sm"
-        >
-          Order Type is required.
-        </div>
       </div>
 
-      <!-- Customer ID (only for CUSTOMER orders) -->
+      <!-- Customer Dropdown -->
       <div *ngIf="isCustomerOrder()">
-        <label class="block mb-1 font-medium">Customer ID</label>
-        <input
-          type="number"
-          formControlName="customerId"
-          class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('customerId')?.invalid &&
-              orderForm.get('customerId')?.touched
-          }"
-        />
-        <div
-          *ngIf="
-            orderForm.get('customerId')?.touched &&
-            orderForm.get('customerId')?.hasError('required')
-          "
-          class="text-red-500 text-sm"
-        >
-          Customer ID is required.
-        </div>
+        <label class="block mb-1 font-medium">Customer</label>
+        <select formControlName="customerId" class="w-full border p-2 rounded">
+          <option value="">Select Customer</option>
+          <option *ngFor="let customer of customers" [value]="customer.id">
+            {{ customer.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Supplier Dropdown (always visible) -->
+      <div>
+        <label class="block mb-1 font-medium">Supplier</label>
+        <select formControlName="supplierId" class="w-full border p-2 rounded">
+          <option value="">Select Supplier</option>
+          <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+            {{ supplier.name }}
+          </option>
+        </select>
       </div>
 
       <!-- Order Date -->
@@ -62,21 +46,7 @@
           type="date"
           formControlName="orderDate"
           class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('orderDate')?.invalid &&
-              orderForm.get('orderDate')?.touched
-          }"
         />
-        <div
-          *ngIf="
-            orderForm.get('orderDate')?.touched &&
-            orderForm.get('orderDate')?.hasError('required')
-          "
-          class="text-red-500 text-sm"
-        >
-          Order Date is required.
-        </div>
       </div>
 
       <!-- Expected Delivery -->
@@ -86,56 +56,7 @@
           type="date"
           formControlName="expectedDelivery"
           class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('expectedDelivery')?.invalid &&
-              orderForm.get('expectedDelivery')?.touched
-          }"
         />
-        <div
-          *ngIf="
-            orderForm.get('expectedDelivery')?.touched &&
-            orderForm.get('expectedDelivery')?.hasError('required')
-          "
-          class="text-red-500 text-sm"
-        >
-          Expected Delivery is required.
-        </div>
-        <div
-          *ngIf="orderForm.hasError('deliveryBeforeOrder')"
-          class="text-red-500 text-sm"
-        >
-          Expected delivery must be after order date.
-        </div>
-      </div>
-
-      <!-- Supplier ID -->
-      <div>
-        <label class="block mb-1 font-medium">Supplier ID</label>
-        <input
-          type="number"
-          formControlName="supplierId"
-          class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('supplierId')?.invalid &&
-              orderForm.get('supplierId')?.touched
-          }"
-        />
-        <div
-          *ngIf="
-            orderForm.get('supplierId')?.touched &&
-            orderForm.get('supplierId')?.invalid
-          "
-          class="text-red-500 text-sm"
-        >
-          <div *ngIf="orderForm.get('supplierId')?.errors?.['required']">
-            Supplier ID is required.
-          </div>
-          <div *ngIf="orderForm.get('supplierId')?.errors?.['min']">
-            Supplier ID must be greater than 0.
-          </div>
-        </div>
       </div>
 
       <!-- Delivery Status -->
@@ -144,26 +65,12 @@
         <select
           formControlName="deliveryStatus"
           class="w-full border p-2 rounded"
-          [ngClass]="{
-            'border-red-500':
-              orderForm.get('deliveryStatus')?.invalid &&
-              orderForm.get('deliveryStatus')?.touched
-          }"
         >
           <option value="" disabled>Select Status</option>
           <option value="PENDING">PENDING</option>
           <option value="DISPATCHED">DISPATCHED</option>
           <option value="DELIVERED">DELIVERED</option>
         </select>
-        <div
-          *ngIf="
-            orderForm.get('deliveryStatus')?.touched &&
-            orderForm.get('deliveryStatus')?.hasError('required')
-          "
-          class="text-red-500 text-sm"
-        >
-          Delivery Status is required.
-        </div>
       </div>
     </div>
 
@@ -174,18 +81,19 @@
         [formGroupName]="i"
         class="grid grid-cols-3 gap-4 items-center border p-4 rounded"
       >
-        <!-- Dynamic Product or Raw Material -->
+        <!-- Product/Raw Material Dropdown -->
         <div>
           <label class="block mb-1 font-medium">
-            {{ isCustomerOrder() ? 'Product' : 'Raw Material' }}
+            {{ isCustomerOrder() ? "Product" : "Raw Material" }}
           </label>
           <select
             *ngIf="isCustomerOrder(); else rawMaterialSelect"
             formControlName="productId"
             class="w-full border p-2 rounded"
+            (change)="onProductSelect(i)"
           >
-            <option value="">Select Product</option>
-            <option *ngFor="let product of products" [value]="product.id">
+            <option [ngValue]="null">Select Product</option>
+            <option *ngFor="let product of products" [ngValue]="product.id">
               {{ product.name }}
             </option>
           </select>
@@ -194,11 +102,12 @@
             <select
               formControlName="rawMaterialId"
               class="w-full border p-2 rounded"
+              (change)="onRawMaterialSelect(i)"
             >
-              <option value="">Select Raw Material</option>
+              <option [ngValue]="null">Select Raw Material</option>
               <option
                 *ngFor="let material of rawMaterials"
-                [value]="material.id"
+                [ngValue]="material.id"
               >
                 {{ material.name }}
               </option>
@@ -209,10 +118,17 @@
         <!-- Quantity -->
         <div>
           <label class="block mb-1 font-medium">Quantity</label>
+          <!-- <input
+            type="number"
+            formControlName="quantity"
+            class="w-full border p-2 rounded"
+          /> -->
+
           <input
             type="number"
             formControlName="quantity"
             class="w-full border p-2 rounded"
+            (input)="onQuantityChange(i)"
           />
         </div>
 
@@ -226,13 +142,13 @@
           />
         </div>
 
-        <!-- Remove Button -->
+        <!-- Remove -->
         <div class="col-span-3 flex justify-end">
           <button
             type="button"
             (click)="removeItem(i)"
-            class="text-red-600 hover:underline"
             *ngIf="items.length > 1"
+            class="text-red-600 hover:underline"
           >
             Remove
           </button>
@@ -240,7 +156,7 @@
       </div>
     </div>
 
-    <!-- Add Item Button -->
+    <!-- Add Item -->
     <div class="mb-4">
       <button
         type="button"
@@ -261,11 +177,10 @@
     </button>
   </form>
 </div>
+
 <app-dummy-payment
   *ngIf="showPaymentModal"
-   [amount]="totalAmount"
+  [amount]="totalAmount"
   (paymentSuccess)="handlePaymentSuccess()"
   (paymentFailure)="handlePaymentFailure()"
 ></app-dummy-payment>
-
-
