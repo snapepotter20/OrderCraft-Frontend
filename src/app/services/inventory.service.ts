@@ -14,12 +14,12 @@ export interface InventoryTransaction {
   reference: string;
 }
 
+
 @Injectable({
   providedIn: 'root',
 })
 export class InventoryService {
   private baseUrl = 'http://localhost:8094/api/orders/inventory';
-
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
@@ -58,7 +58,6 @@ export class InventoryService {
       { headers, params }
     );
   }
-
 
   // ✅ Export PDF
   exportPdf(filters?: any): Observable<Blob> {
@@ -137,7 +136,3 @@ export class InventoryService {
     );
   }
 }
-
-
-
-

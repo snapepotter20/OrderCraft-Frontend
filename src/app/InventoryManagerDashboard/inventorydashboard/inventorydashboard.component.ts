@@ -8,6 +8,7 @@ import { ViewRequestedOrdersComponent } from '../view-requested-orders-component
 import { ViewCompletedOrdersComponent } from '../view-completed-orders-component/view-completed-orders-component.component';
 import { InventoryTransactionsComponent } from '../inventory-transactions/inventory-transactions.component';
 import { ReturnedOrdersComponent } from '../returned-orders/returned-orders.component';
+import { ViewRawMaterialsComponent } from '../view-raw-materials/view-raw-materials.component';
 
 @Component({
   selector: 'app-inventorydashboard',
@@ -20,7 +21,8 @@ import { ReturnedOrdersComponent } from '../returned-orders/returned-orders.comp
     ViewCompletedOrdersComponent,
     ViewRequestedOrdersComponent,
     InventoryTransactionsComponent,
-    ReturnedOrdersComponent
+    ReturnedOrdersComponent,
+    ViewRawMaterialsComponent
   ],
   templateUrl: './inventorydashboard.component.html',
   styleUrl: './inventorydashboard.component.css',
@@ -32,6 +34,7 @@ export class InventorydashboardComponent implements OnInit {
     | 'completedorders'
     | 'returnedorders'
     | 'stocks'
+    | 'rawmaterials'
     | 'profile' = 'inventorytransactions';
 
   constructor(

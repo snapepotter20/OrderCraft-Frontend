@@ -14,6 +14,12 @@
       >
         + Add Category
       </button>
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        (click)="openAddRawMaterialModal()"
+      >
+        + Add Raw Material
+      </button>
     </div>
   </div>
 
@@ -413,5 +419,109 @@
         Create Demand
       </button>
     </div>
+  </div>
+</div>
+
+<!-- Add Raw Material Modal -->
+<div
+  *ngIf="isRawMaterialModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+    <h2 class="text-2xl font-bold mb-4">Add Raw Material</h2>
+
+    <form
+      #rawMaterialForm="ngForm"
+      (ngSubmit)="saveRawMaterial(rawMaterialForm)"
+    >
+      <input
+        type="text"
+        placeholder="Material Name"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.material_name"
+        name="material_name"
+        required
+        #materialName="ngModel"
+      />
+      <div
+        *ngIf="materialName.invalid && materialName.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Material name is required.
+      </div>
+
+      <textarea
+        placeholder="Description"
+        class="w-full border rounded p-2 mb-3"
+        [(ngModel)]="newRawMaterial.description"
+        name="description"
+      ></textarea>
+
+      <input
+        type="text"
+        placeholder="Unit of Measure (e.g. kg, liter)"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.unit_of_measure"
+        name="unit_of_measure"
+        required
+        #uom="ngModel"
+      />
+      <div *ngIf="uom.invalid && uom.touched" class="text-red-500 text-sm mb-2">
+        Unit of measure is required.
+      </div>
+
+      <input
+        type="number"
+        placeholder="Price"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.price"
+        name="price"
+        required
+        #price="ngModel"
+      />
+      <div
+        *ngIf="price.invalid && price.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Price is required.
+      </div>
+
+      <!-- Supplier Dropdown -->
+      <select
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.supplier_id"
+        name="supplier_id"
+        required
+        #supplierId="ngModel"
+      >
+        <option [ngValue]="null" disabled>Select Supplier</option>
+        <option *ngFor="let sup of suppliers" [value]="sup.id">
+          {{ sup.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="supplierId.invalid && supplierId.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Supplier is required.
+      </div>
+
+      <div class="flex justify-end space-x-2 mt-4">
+        <button
+          type="button"
+          (click)="closeAddRawMaterialModal()"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="rawMaterialForm.invalid"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Save
+        </button>
+      </div>
+    </form>
   </div>
 </div>

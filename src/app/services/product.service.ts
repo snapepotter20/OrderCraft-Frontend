@@ -16,11 +16,23 @@ export interface ProductDemand {
   };
   demandQuantity: number;
   demandDate: string; // ISO date string from backend
-  demandStatus: "NONE" | "PENDING" | "SCHEDULED" | "FULFILLED" | "DISPATCHED";
+  demandStatus: 'NONE' | 'PENDING' | 'SCHEDULED' | 'FULFILLED' | 'DISPATCHED';
   schedule?: {
     psId: number;
     psStatus: string;
   } | null;
+}
+
+export interface RawMaterial {
+  raw_material_id: number;
+  material_name: string;
+  description: string;
+  unit_of_measure: string;
+  price: number;
+  supplier?: {
+    supplier_id: number;
+    supplier_name: string;
+  };
 }
 
 @Injectable({
@@ -133,6 +145,20 @@ export class ProductService {
 
   deliverProduct(demandId: number) {
     const headers = this.getAuthHeaders();
-    return this.http.patch(`${this.baseUrl}/deliverDemand/${demandId}`, {headers});
+    return this.http.patch(`${this.baseUrl}/deliverDemand/${demandId}`, {
+      headers,
+    });
+  }
+
+  addRawMaterial(rawMaterial: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/addrawmaterial`, rawMaterial);
+  }
+
+  getAllRawMaterials(): Observable<RawMaterial[]> {
+    return this.http.get<RawMaterial[]>(`${this.baseUrl}/getallrawmaterials`);
+  }
+
+  getSuppliers(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/suppliers/getallsuppliers`);
   }
 }

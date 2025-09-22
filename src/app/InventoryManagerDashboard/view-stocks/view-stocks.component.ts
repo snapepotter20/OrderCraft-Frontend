@@ -63,6 +63,27 @@ export class ViewStocksComponent {
   ngOnInit(): void {
     this.loadProducts();
     this.loadCategories();
+    this.loadSuppliers();
+  }
+
+  //   loadSuppliers() {
+  //   this.productService.getSuppliers().subscribe({
+  //     next: (res) => (this.suppliers = res),
+  //     error: (err) => console.error('Error fetching suppliers:', err),
+  //   });
+  // }
+
+  loadSuppliers() {
+    this.productService.getSuppliers().subscribe({
+      next: (res) => {
+        // Map API keys to match your template
+        this.suppliers = res.map((s: any) => ({
+          id: s.supplier_id,
+          name: s.supplier_name,
+        }));
+      },
+      error: (err) => console.error('Error fetching suppliers:', err),
+    });
   }
 
   getRandomColor(index: number): string {
@@ -233,20 +254,20 @@ export class ViewStocksComponent {
 
   createDemand() {
     const token = localStorage.getItem('token');
-        if (!token) {
-          Swal.fire(
-            '⚠️ Error',
-            'No user token found. Please log in again.',
-            'error'
-          );
-          return;
-        }
-    
-        // Decode the JWT to extract user info
-        const decoded: any = jwtDecode(token);
-        console.log('Decoded Token:', decoded);
-    
-        const user = { user_id: decoded.userId };
+    if (!token) {
+      Swal.fire(
+        '⚠️ Error',
+        'No user token found. Please log in again.',
+        'error'
+      );
+      return;
+    }
+
+    // Decode the JWT to extract user info
+    const decoded: any = jwtDecode(token);
+    console.log('Decoded Token:', decoded);
+
+    const user = { user_id: decoded.userId };
     if (
       !this.demandQuantity ||
       this.demandQuantity < 20 ||
@@ -258,7 +279,11 @@ export class ViewStocksComponent {
     }
 
     this.productService
-      .updateDemandedQuantity(this.demandProduct.productId, this.demandQuantity,user)
+      .updateDemandedQuantity(
+        this.demandProduct.productId,
+        this.demandQuantity,
+        user
+      )
       .subscribe({
         next: () => {
           alert('Demand created successfully!');
@@ -273,7 +298,7 @@ export class ViewStocksComponent {
       });
   }
 
-   openAddCategoryModal() {
+  openAddCategoryModal() {
     Swal.fire({
       title: 'Add New Category',
       input: 'text',
@@ -288,21 +313,89 @@ export class ViewStocksComponent {
       showCancelButton: true,
       confirmButtonText: 'Save',
       confirmButtonColor: '#2563eb', // Tailwind blue-600
-      cancelButtonColor: '#9ca3af',  // Tailwind gray-400
+      cancelButtonColor: '#9ca3af', // Tailwind gray-400
       preConfirm: (categoryName) => {
-        return this.productService.addCategory({ categoryName }).toPromise()
+        return this.productService
+          .addCategory({ categoryName })
+          .toPromise()
           .then((res) => {
             this.loadCategories(); // refresh list
             return res;
           })
           .catch((err) => {
-            Swal.showValidationMessage(`Request failed: ${err.error?.message || err.message}`);
+            Swal.showValidationMessage(
+              `Request failed: ${err.error?.message || err.message}`
+            );
           });
       },
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire('Success!', 'Category has been added.', 'success');
       }
+    });
+  }
+
+  // Raw Material Modal
+  isRawMaterialModalOpen = false;
+  // suppliers: any[] = [];
+  suppliers: { id: number; name: string }[] = [];
+
+  newRawMaterial = {
+    material_name: '',
+    description: '',
+    unit_of_measure: '',
+    price: null,
+    supplier_id: null,
+  };
+
+  openAddRawMaterialModal() {
+    this.isRawMaterialModalOpen = true;
+  }
+
+  closeAddRawMaterialModal() {
+    this.isRawMaterialModalOpen = false;
+    this.resetRawMaterialForm();
+  }
+
+  resetRawMaterialForm() {
+    this.newRawMaterial = {
+      material_name: '',
+      description: '',
+      unit_of_measure: '',
+      price: null,
+      supplier_id: null,
+    };
+  }
+
+  saveRawMaterial(form: NgForm) {
+    if (form.invalid) {
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation Error'
+      );
+      return;
+    }
+
+    const payload = {
+      material_name: this.newRawMaterial.material_name,
+      description: this.newRawMaterial.description,
+      unit_of_measure: this.newRawMaterial.unit_of_measure,
+      price: this.newRawMaterial.price,
+      // supplier: { supplierId: this.newRawMaterial.supplier_id },
+      supplier: { supplier_id: this.newRawMaterial.supplier_id },
+    };
+
+    this.productService.addRawMaterial(payload).subscribe({
+      next: () => {
+        this.toastr.success('Raw material added successfully!', 'Success');
+        this.closeAddRawMaterialModal();
+        this.resetRawMaterialForm();
+        // Optional: refresh raw material list
+      },
+      error: (err) => {
+        console.error('Error adding raw material:', err);
+        this.toastr.error('Failed to add raw material.', 'Error');
+      },
     });
   }
 }

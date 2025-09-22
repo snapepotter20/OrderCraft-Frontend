@@ -1,0 +1,55 @@
+<div class="p-6">
+  <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+    📦 Raw Materials
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div
+      *ngFor="let material of rawMaterials"
+      class="bg-white border rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
+    >
+      <!-- Card Header -->
+      <div class="bg-gradient-to-r from-pink-900 to-black-800 p-4">
+        <h3 class="text-xl font-semibold text-white">
+          {{ material.material_name }}
+        </h3>
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5 space-y-3">
+        <p class="text-gray-600">{{ material.description }}</p>
+
+        <div class="flex justify-between text-sm text-gray-700">
+          <span class="font-medium">Unit:</span>
+          <span>{{ material.unit_of_measure }}</span>
+        </div>
+
+        <div class="flex justify-between text-sm text-gray-700">
+          <span class="font-medium">Price:</span>
+          <span class="text-green-600 font-semibold">₹{{ material.price }}</span>
+        </div>
+
+        <div *ngIf="material.supplier" class="flex justify-between text-sm text-gray-700">
+          <span class="font-medium">Supplier:</span>
+          <span>{{ material.supplier.supplier_name }}</span>
+        </div>
+      </div>
+
+      <!-- Card Footer -->
+      <div class="px-5 py-4 border-t flex justify-between">
+        <button
+          (click)="editRawMaterial(material)"
+          class="px-4 py-1.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition"
+        >
+          ✏️ Edit
+        </button>
+        <button
+          (click)="deleteRawMaterial(material.raw_material_id)"
+          class="px-4 py-1.5 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
+        >
+          🗑 Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
