@@ -29,7 +29,7 @@ export interface RawMaterial {
   description: string;
   unit_of_measure: string;
   price: number;
-  supplier?: {
+  supplier: {
     supplier_id: number;
     supplier_name: string;
   };
@@ -156,6 +156,21 @@ export class ProductService {
 
   getAllRawMaterials(): Observable<RawMaterial[]> {
     return this.http.get<RawMaterial[]>(`${this.baseUrl}/getallrawmaterials`);
+  }
+
+  updateRawMaterial(
+    id: number,
+    material: RawMaterial
+  ): Observable<RawMaterial> {
+    return this.http.put<RawMaterial>(
+      `${this.baseUrl}/updaterawmaterial/${id}`,
+      material
+    );
+  }
+
+  // ✅ Delete raw material
+  deleteRawMaterial(id: number): Observable<string> {
+    return this.http.delete<string>(`${this.baseUrl}/deleterawmaterial/${id}`);
   }
 
   getSuppliers(): Observable<any> {

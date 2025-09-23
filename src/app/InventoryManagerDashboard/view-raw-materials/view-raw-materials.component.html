@@ -26,10 +26,15 @@
 
         <div class="flex justify-between text-sm text-gray-700">
           <span class="font-medium">Price:</span>
-          <span class="text-green-600 font-semibold">₹{{ material.price }}</span>
+          <span class="text-green-600 font-semibold"
+            >₹{{ material.price }}</span
+          >
         </div>
 
-        <div *ngIf="material.supplier" class="flex justify-between text-sm text-gray-700">
+        <div
+          *ngIf="material.supplier"
+          class="flex justify-between text-sm text-gray-700"
+        >
           <span class="font-medium">Supplier:</span>
           <span>{{ material.supplier.supplier_name }}</span>
         </div>
@@ -51,5 +56,116 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ================= Edit Modal ================= -->
+<div
+  *ngIf="isEditModalOpen && editingMaterial"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl p-6 relative">
+    <!-- Close Button -->
+    <button
+      (click)="closeEditModal()"
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+    >
+      ✖
+    </button>
+
+    <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+      ✏️ Edit Raw Material
+    </h3>
+
+    <!-- Edit Form -->
+    <form (ngSubmit)="saveEdit()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-1"
+            >Material Name</label
+          >
+          <input
+            [(ngModel)]="editingMaterial.material_name"
+            name="material_name"
+            type="text"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          />
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-medium mb-1"
+            >Description</label
+          >
+          <textarea
+            [(ngModel)]="editingMaterial.description"
+            name="description"
+            rows="2"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-medium mb-1"
+            >Unit of Measure</label
+          >
+          <input
+            [(ngModel)]="editingMaterial.unit_of_measure"
+            name="unit_of_measure"
+            type="text"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          />
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Price</label>
+          <input
+            [(ngModel)]="editingMaterial.price"
+            name="price"
+            type="number"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          />
+        </div>
+
+        <!-- <div>
+          <label class="block text-gray-700 font-medium mb-1">Supplier</label>
+          <input
+            [(ngModel)]="editingMaterial.supplier.supplier_name"
+            name="supplier_name"
+            s
+            type="text"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          />
+        </div> -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Supplier</label>
+          <select
+            [(ngModel)]="editingMaterial.supplier.supplier_id"
+            name="supplier_id"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200"
+          >
+            <option *ngFor="let sup of suppliers" [value]="sup.id">
+              {{ sup.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="mt-6 flex justify-end space-x-4">
+        <button
+          type="button"
+          (click)="closeEditModal()"
+          class="px-5 py-2 rounded-lg bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+        >
+          💾 Save Changes
+        </button>
+      </div>
+    </form>
   </div>
 </div>

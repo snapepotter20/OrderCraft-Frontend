@@ -15,7 +15,7 @@ export interface Profile {
   providedIn: 'root',
 })
 export class ProfileService {
-  private baseUrl = 'http://localhost:8094/ordercraft/profile';
+  private baseUrl = 'http://localhost:8094/ordercraft';
 
   constructor(private http: HttpClient) {}
   private getHeaders(): HttpHeaders {
@@ -27,13 +27,13 @@ export class ProfileService {
   }
 
   getProfile(): Observable<Profile> {
-    return this.http.get<Profile>(this.baseUrl, {
+    return this.http.get<Profile>(`${this.baseUrl}/profile`, {
       headers: this.getHeaders(),
     });
   }
 
   updateProfile(id: number, data: Partial<Profile>): Observable<Profile> {
-    return this.http.put<Profile>(`${this.baseUrl}/${id}`, data, {
+    return this.http.put<Profile>(`${this.baseUrl}/profile/${id}`, data, {
       headers: this.getHeaders(),
     });
   }
