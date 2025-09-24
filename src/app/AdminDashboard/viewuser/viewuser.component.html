@@ -1,0 +1,205 @@
+<div class="bg-white rounded-xl shadow-2xl p-8">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6">All Users</h2>
+
+  <!-- 🔍 Filter Section -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <!-- Username Search -->
+    <input
+      type="text"
+      placeholder="Search by Username"
+      [(ngModel)]="filters.username"
+      (input)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    />
+
+    <!-- Role Filter -->
+    <select
+      [(ngModel)]="filters.role"
+      (change)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    >
+      <option value="">All Roles</option>
+      <option *ngFor="let role of roles" [value]="role.roleName">
+        {{ role.roleName }}
+      </option>
+    </select>
+
+    <!-- Status Filter -->
+    <select
+      [(ngModel)]="filters.status"
+      (change)="applyFilters()"
+      class="border border-gray-300 rounded px-3 py-2 w-60"
+    >
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="locked">Locked</option>
+    </select>
+    <button
+      (click)="clearFilters()"
+      class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
+    >
+      Clear
+    </button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm text-gray-800">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wide">
+        <tr>
+          <th class="text-left px-6 py-3">Username</th>
+          <th class="text-left px-6 py-3">Email</th>
+          <th class="text-left px-6 py-3">Phone</th>
+          <th class="text-left px-6 py-3">Role</th>
+          <th class="text-left px-6 py-3">Status</th>
+          <th class="text-left px-6 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let user of filteredUsers"
+          class="hover:bg-gray-50 transition duration-200"
+        >
+          <td class="px-6 py-4">{{ user.username }}</td>
+          <td class="px-6 py-4">{{ user.email }}</td>
+          <td class="px-6 py-4">{{ user.phoneno }}</td>
+          <td class="px-6 py-4">
+            <span
+              class="inline-block px-3 py-1 rounded-full text-xs font-semibold"
+              [ngClass]="{
+                'bg-green-100 text-green-800':
+                  user.role.roleName === 'PROCUREMENT_OFFICER',
+                'bg-blue-100 text-blue-800':
+                  user.role.roleName === 'INVENTORY_MANAGER',
+                'bg-yellow-100 text-yellow-800':
+                  user.role.roleName === 'PRODUCTION_MANAGER',
+                'bg-purple-100 text-purple-800':
+                  user.role.roleName === 'SUPPLIER',
+                'bg-red-100 text-red-800': user.role.roleName === 'ADMIN'
+              }"
+            >
+              {{ user.role.roleName }}
+            </span>
+          </td>
+          <td>
+            <div class="flex items-center ml-4">
+              <button
+                (click)="onToggleLockClick(user)"
+                class="font-semibold px-3 py-1 rounded text-sm border border-current"
+                [style.color]="isUserLocked(user) ? 'red' : 'green'"
+                [title]="isUserLocked(user) ? 'Unlock Account' : 'Lock Account'"
+              >
+                {{ isUserLocked(user) ? "Unlock Account" : "Active" }}
+              </button>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center space-x-4">
+              <button
+                class="cursor-pointer hover:text-blue-800 transition-colors duration-200 text-lg"
+                (click)="onEdit(user)"
+                title="Edit"
+              >
+                ✏️
+              </button>
+              <button
+                class="cursor-pointer hover:text-red-800 transition-colors duration-200 text-lg"
+                (click)="onDelete(user)"
+                title="Delete"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Edit User Modal -->
+    <div
+      *ngIf="isEditModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 class="text-xl font-bold mb-4">Edit User</h2>
+
+        <form [formGroup]="editForm" (ngSubmit)="onUpdate()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium">Username</label>
+            <input
+              formControlName="username"
+              class="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Phone No</label>
+            <input
+              type="text"
+              formControlName="phoneno"
+              maxlength="10"
+              (keypress)="allowOnlyNumbers($event)"
+              class="w-full border rounded px-3 py-2"
+            />
+            <div
+              *ngIf="
+                editForm.get('phoneno')?.invalid &&
+                editForm.get('phoneno')?.touched
+              "
+              class="text-red-600 text-sm mt-1"
+            >
+              Phone number must be 10 digits
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Role</label>
+            <select
+              formControlName="role"
+              class="w-full border rounded px-3 py-2"
+            >
+              <option value="">Select Role</option>
+              <option *ngFor="let role of roles" [value]="role.role_id">
+                {{ role.roleName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="flex justify-end space-x-2 mt-6">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="bg-gray-300 px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded"
+              [disabled]="editForm.invalid"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

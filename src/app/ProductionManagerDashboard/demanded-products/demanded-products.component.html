@@ -1,0 +1,117 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4">📦 Demanded Products</h2>
+
+  <div *ngIf="loading" class="text-gray-500">Loading...</div>
+
+  <table
+    *ngIf="!loading && demandedProducts.length > 0"
+    class="min-w-full border border-gray-200 rounded-lg shadow-md overflow-hidden"
+  >
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="px-4 py-2 text-left">Product Name</th>
+        <th class="px-4 py-2 text-left">Unit Price</th>
+        <th class="px-4 py-2 text-left">Demanded Quantity</th>
+        <th class="px-4 py-3 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let demand of demandedProducts"
+        class="hover:bg-gray-100 transition"
+      >
+        <td class="px-4 py-2 border-t">{{ demand.product.productName }}</td>
+        <td class="px-4 py-2 border-t">
+          ₹{{ demand.product.productUnitPrice }}
+        </td>
+        <td class="px-4 py-2 border-t font-semibold text-red-600">
+          {{ demand.demandQuantity }}
+        </td>
+        <td class="px-4 py-3 text-center">
+          <div class="flex justify-left gap-2">
+            <!-- Schedule button -->
+            <button
+              class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="demand.demandStatus && demand.demandStatus !== 'PENDING'"
+              (click)="openScheduleModal(demand)"
+            >
+              Schedule Production
+            </button>
+
+            <!-- Deliver button -->
+            <button
+              class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="demand.demandStatus !== 'DISPATCHED'"
+              (click)="deliverProduct(demand)"
+            >
+              Deliver
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div
+    *ngIf="!loading && demandedProducts.length === 0"
+    class="text-gray-500 mt-4"
+  >
+    No demanded products found.
+  </div>
+</div>
+
+<!-- Schedule Modal -->
+<div
+  *ngIf="showScheduleModal"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="bg-white rounded-lg p-6 w-96">
+    <h3 class="text-lg font-semibold mb-4">Schedule Production</h3>
+
+    <form (ngSubmit)="submitSchedule()" #scheduleForm="ngForm">
+      <label class="block mb-2">Start Date</label>
+      <input
+        type="date"
+        [(ngModel)]="schedule.psStartDate"
+        name="startDate"
+        class="border p-2 w-full mb-3"
+        required
+      />
+
+      <label class="block mb-2">End Date</label>
+      <input
+        type="date"
+        [(ngModel)]="schedule.psEndDate"
+        name="endDate"
+        class="border p-2 w-full mb-3"
+        required
+      />
+
+      <label class="block mb-2">Quantity</label>
+      <input
+        type="number"
+        [(ngModel)]="schedule.psQuantity"
+        name="quantity"
+        class="border p-2 w-full mb-4"
+        required
+      />
+
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          (click)="closeScheduleModal()"
+          class="px-3 py-1 bg-gray-300 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-3 py-1 bg-blue-500 text-white rounded"
+          [disabled]="scheduleForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

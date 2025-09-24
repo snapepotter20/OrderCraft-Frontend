@@ -1,0 +1,48 @@
+<div class="max-w-7xl mx-auto px-6 py-10">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">📦 Delivered Products</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center text-gray-500 animate-pulse">
+    Loading delivered products...
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="text-center text-red-500 font-semibold">
+    {{ error }}
+  </div>
+
+  <!-- Delivered Products Grid -->
+  <div *ngIf="!loading && deliveredProducts.length > 0" class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let ps of deliveredProducts" 
+         class="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition-transform transform hover:scale-105 flex flex-col justify-between">
+
+      <!-- Product Info -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-1">{{ ps.psProductId.productName }}</h2>
+        <p class="text-sm text-gray-500 mb-3">{{ ps.psProductId.category.categoryName }}</p>
+
+        <!-- Quantity -->
+        <p class="text-gray-700 text-sm mb-2">
+          Quantity: <span class="font-semibold">{{ ps.completedQuantity }}/{{ ps.psQuantity }}</span>
+        </p>
+
+        <!-- Status -->
+        <span class="inline-block px-3 py-1 rounded-full text-sm font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700': ps.psStatus === 'DELIVERED',
+                'bg-blue-100 text-blue-700': ps.psStatus !== 'DELIVERED'
+              }">
+          {{ ps.psStatus === 'DELIVERED' ? '✅ Product Delivered' : 'In Progress' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && deliveredProducts.length === 0" class="text-center text-gray-500">
+    No delivered products found 🚚
+  </div>
+</div>

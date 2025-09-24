@@ -1,0 +1,127 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside
+    class="w-64 bg-gradient-to-b from-pink-900 to-black-400 text-white flex flex-col justify-between shadow-xl"
+  >
+    <div>
+      <div class="p-6 text-xl font-bold tracking-wide border-b border-white/20">
+        <i class="fas fa-box-open mr-2"></i> Inventory Dashboard
+      </div>
+      <nav class="space-y-1 px-4 mt-4">
+        <div
+          (click)="selectedTab = 'inventorytransactions'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'inventorytransactions'
+          }"
+        >
+          <i class="fas fa-plus-circle"></i>
+          <span>Inventory Transactions</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'requestedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'requestedorders'
+          }"
+        >
+          <i class="fas fa-clipboard-list"></i>
+          <span>Requested Orders</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'completedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'completedorders'
+          }"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>Completed Orders</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'returnedorders'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'returnedorders'
+          }"
+        >
+          <i class="fas fa-undo-alt"></i>
+          <span>Returned Orders</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'stocks'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'stocks'
+          }"
+        >
+          <i class="fas fa-boxes"></i>
+          <span>View All Stocks</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'rawmaterials'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'rawmaterials'
+          }"
+        >
+          <i class="fas fa-cubes"></i>
+          <span>View Raw Materials</span>
+        </div>
+
+        <div
+          (click)="selectedTab = 'profile'"
+          class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
+          [ngClass]="{
+            'bg-white text-blue-800 font-semibold shadow-md':
+              selectedTab === 'profile'
+          }"
+        >
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Logout -->
+    <div
+      class="flex items-center border border-red-300 rounded-md gap-2 p-3 m-4 text-red-500 hover:text-white hover:bg-red-600 cursor-pointer transition duration-200"
+      (click)="Logout()"
+    >
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-auto">
+    <app-inventory-transactions
+      *ngIf="selectedTab === 'inventorytransactions'"
+    ></app-inventory-transactions>
+    <app-view-stocks *ngIf="selectedTab === 'stocks'"></app-view-stocks>
+    <app-view-raw-materials
+      *ngIf="selectedTab === 'rawmaterials'"
+    ></app-view-raw-materials>
+    <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
+    <app-view-requested-orders-component
+      *ngIf="selectedTab === 'requestedorders'"
+    ></app-view-requested-orders-component>
+    <app-view-completed-orders-component
+      *ngIf="selectedTab === 'completedorders'"
+    ></app-view-completed-orders-component>
+    <app-returned-orders
+      *ngIf="selectedTab === 'returnedorders'"
+    ></app-returned-orders>
+  </main>
+</div>

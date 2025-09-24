@@ -1,0 +1,527 @@
+<div class="bg-white rounded-xl shadow-2xl p-8">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">All Products</h2>
+    <div class="flex gap-2">
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        (click)="openCreateProductModal()"
+      >
+        + Add Product
+      </button>
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        (click)="openAddCategoryModal()"
+      >
+        + Add Category
+      </button>
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        (click)="openAddRawMaterialModal()"
+      >
+        + Add Raw Material
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex space-x-4 mb-4">
+    <!-- Category Filter -->
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="applyFilters()"
+      class="border rounded p-2"
+    >
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat.categoryId">
+        {{ cat.categoryName }}
+      </option>
+    </select>
+
+    <!-- Product Name Search -->
+    <input
+      type="text"
+      [(ngModel)]="searchName"
+      (input)="applyFilters()"
+      placeholder="Search by product name"
+      class="border rounded p-2"
+      style="width: 380px"
+    />
+    <button
+      (click)="clearFilters()"
+      class="border rounded bg-gray-300 p-2 btn btn-secondary"
+    >
+      Clear Filters
+    </button>
+  </div>
+
+  <div *ngIf="products.length === 0" class="text-gray-500 text-center">
+    No products available.
+  </div>
+
+  <div *ngIf="products.length > 0" class="overflow-x-auto">
+    <table class="min-w-full border border-gray-200 rounded-xl overflow-hidden">
+      <thead>
+        <tr class="bg-gray-100 text-left text-gray-700 uppercase text-sm">
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Product Name</th>
+          <th class="px-4 py-3">Description</th>
+          <th class="px-4 py-3">Unit Price</th>
+          <th class="px-4 py-3">Quantity</th>
+          <th class="px-4 py-3">Product Category</th>
+          <th class="px-4 py-3">Product Threshold</th>
+          <th class="px-4 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr
+          *ngFor="let product of products; let i = index"
+          [ngClass]="{
+            'low-quantity': product.productQuantity < product.threshold
+          }"
+          [ngStyle]="{ 'background-color': getRandomColor(i) }"
+          class="text-gray-800 hover:scale-[1.01] transition-all duration-200"
+        > -->
+        <tr
+          *ngFor="let product of products; let i = index"
+          [ngClass]="{
+            'bg-red-100 animate-pulse border-l-4 border-red-500':
+              product.productQuantity < product.threshold
+          }"
+          [ngStyle]="{ 'background-color': getRandomColor(i) }"
+          class="text-gray-800 hover:scale-[1.01] transition-all duration-200"
+        >
+          <td class="px-4 py-3 font-bold">#{{ product.productId }}</td>
+          <td class="px-4 py-3">{{ product.productName }}</td>
+          <td class="px-4 py-3 max-w-xs truncate">
+            {{ product.productDescription || "No description available." }}
+          </td>
+          <td class="px-4 py-3">₹{{ product.productUnitPrice }}</td>
+          <!-- <td class="px-4 py-3">
+            {{ product.productQuantity }}
+            <span
+              *ngIf="product.productQuantity < product.threshold"
+              class="low-quantity-text"
+            >
+              (Low Quantity)
+            </span>
+          </td> -->
+          <td class="px-4 py-3 flex items-center">
+            {{ product.productQuantity }}
+            <span
+              *ngIf="product.productQuantity < product.threshold"
+              class="text-red-600 font-semibold flex items-center ml-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="w-5 h-5 animate-bounce"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M21 12a9 9 0 11-9-9"
+                />
+              </svg>
+              Low Quantity!
+            </span>
+          </td>
+
+          <td class="px-4 py-3">{{ product.category?.categoryName || "—" }}</td>
+          <td class="px-4 py-3">{{ product.threshold || "—" }}</td>
+          <td class="px-4 py-3 text-center">
+            <div class="flex justify-left gap-2">
+              <button
+                class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition"
+                (click)="openEditProductModal(product)"
+              >
+                Edit
+              </button>
+              <button
+                class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-500 hover:bg-red-600 transition"
+                (click)="deleteProduct(product.productId)"
+              >
+                Delete
+              </button>
+              <button
+                *ngIf="product.productQuantity < product.threshold"
+                class="px-4 py-2 text-sm font-medium rounded-lg text-black bg-yellow-400 hover:bg-yellow-500 transition"
+                (click)="openDemandModal(product)"
+              >
+                Demand
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Create Product Modal -->
+<!-- Create Product Modal -->
+<div
+  *ngIf="isCreateModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+    <h2 class="text-2xl font-bold mb-4">Create Product</h2>
+
+    <form #productForm="ngForm" (ngSubmit)="saveProduct(productForm)">
+      <input
+        type="text"
+        placeholder="Product Name"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newProduct.productName"
+        name="productName"
+        required
+        #productName="ngModel"
+      />
+      <div
+        *ngIf="productName.invalid && productName.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Product name is required.
+      </div>
+
+      <textarea
+        placeholder="Description"
+        class="w-full border rounded p-2 mb-3"
+        [(ngModel)]="newProduct.productDescription"
+        name="productDescription"
+      ></textarea>
+
+      <input
+        type="number"
+        placeholder="Unit Price"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newProduct.productUnitPrice"
+        name="productUnitPrice"
+        required
+        #unitPrice="ngModel"
+      />
+      <div
+        *ngIf="unitPrice.invalid && unitPrice.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Unit price is required.
+      </div>
+
+      <input
+        type="number"
+        placeholder="Quantity"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newProduct.productQuantity"
+        name="productQuantity"
+        required
+        #quantity="ngModel"
+      />
+      <div
+        *ngIf="quantity.invalid && quantity.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Quantity is required.
+      </div>
+
+      <!-- ✅ Replace categoryId input with dropdown -->
+      <select
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newProduct.categoryId"
+        name="categoryId"
+        required
+        #categoryId="ngModel"
+      >
+        <option [ngValue]="null" disabled>Select Category</option>
+        <option *ngFor="let cat of categories" [value]="cat.categoryId">
+          {{ cat.categoryName }}
+        </option>
+      </select>
+      <div
+        *ngIf="categoryId.invalid && categoryId.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Category is required.
+      </div>
+
+      <div class="flex justify-end space-x-2 mt-4">
+        <button
+          type="button"
+          (click)="closeCreateProductModal()"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="productForm.invalid"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div
+  *ngIf="isEditModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+    <h2 class="text-2xl font-bold mb-4">Edit Product</h2>
+
+    <form #editForm="ngForm" (ngSubmit)="updateProduct(editForm)">
+      <input
+        type="text"
+        placeholder="Product Name"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="selectedProduct.productName"
+        name="productName"
+        required
+        #editProductName="ngModel"
+      />
+      <div
+        *ngIf="editProductName.invalid && editProductName.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Product name is required.
+      </div>
+
+      <textarea
+        placeholder="Description"
+        class="w-full border rounded p-2 mb-3"
+        [(ngModel)]="selectedProduct.productDescription"
+        name="productDescription"
+      ></textarea>
+
+      <input
+        type="number"
+        placeholder="Unit Price"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="selectedProduct.productUnitPrice"
+        name="productUnitPrice"
+        required
+        #editUnitPrice="ngModel"
+      />
+      <div
+        *ngIf="editUnitPrice.invalid && editUnitPrice.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Unit price is required.
+      </div>
+
+      <input
+        type="number"
+        placeholder="Quantity"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="selectedProduct.productQuantity"
+        name="productQuantity"
+        required
+        #editQuantity="ngModel"
+      />
+      <div
+        *ngIf="editQuantity.invalid && editQuantity.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Quantity is required.
+      </div>
+
+      <!-- <input
+        type="number"
+        placeholder="Category ID"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="selectedProduct.categoryId"
+        name="categoryId"
+        required
+        #editCategoryId="ngModel"
+      />
+      <div
+        *ngIf="editCategoryId.invalid && editCategoryId.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Category ID is required.
+      </div> -->
+
+      <select
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="selectedProduct.categoryId"
+        name="categoryId"
+        required
+        #editCategoryId="ngModel"
+      >
+        <option [ngValue]="null" disabled>Select Category</option>
+        <option *ngFor="let cat of categories" [value]="cat.categoryId">
+          {{ cat.categoryName }}
+        </option>
+      </select>
+      <div
+        *ngIf="editCategoryId.invalid && editCategoryId.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Category is required.
+      </div>
+
+      <div class="flex justify-end space-x-2 mt-4">
+        <button
+          type="button"
+          (click)="closeEditProductModal()"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="editForm.invalid"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Update
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Demand Product Modal -->
+<div
+  *ngIf="isDemandModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+    <h2 class="text-2xl font-bold mb-4">Create Demand</h2>
+    <p class="mb-4 text-gray-700">
+      Product: <strong>{{ demandProduct?.productName }}</strong>
+    </p>
+
+    <input
+      type="number"
+      placeholder="Enter quantity to demand"
+      class="w-full border rounded p-2 mb-3"
+      [(ngModel)]="demandQuantity"
+      min="1"
+    />
+
+    <div class="flex justify-end space-x-2 mt-4">
+      <button
+        type="button"
+        (click)="closeDemandModal()"
+        class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="createDemand()"
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+      >
+        Create Demand
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Raw Material Modal -->
+<div
+  *ngIf="isRawMaterialModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+    <h2 class="text-2xl font-bold mb-4">Add Raw Material</h2>
+
+    <form
+      #rawMaterialForm="ngForm"
+      (ngSubmit)="saveRawMaterial(rawMaterialForm)"
+    >
+      <input
+        type="text"
+        placeholder="Material Name"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.material_name"
+        name="material_name"
+        required
+        #materialName="ngModel"
+      />
+      <div
+        *ngIf="materialName.invalid && materialName.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Material name is required.
+      </div>
+
+      <textarea
+        placeholder="Description"
+        class="w-full border rounded p-2 mb-3"
+        [(ngModel)]="newRawMaterial.description"
+        name="description"
+      ></textarea>
+
+      <input
+        type="text"
+        placeholder="Unit of Measure (e.g. kg, liter)"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.unit_of_measure"
+        name="unit_of_measure"
+        required
+        #uom="ngModel"
+      />
+      <div *ngIf="uom.invalid && uom.touched" class="text-red-500 text-sm mb-2">
+        Unit of measure is required.
+      </div>
+
+      <input
+        type="number"
+        placeholder="Price"
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.price"
+        name="price"
+        required
+        #price="ngModel"
+      />
+      <div
+        *ngIf="price.invalid && price.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Price is required.
+      </div>
+
+      <!-- Supplier Dropdown -->
+      <select
+        class="w-full border rounded p-2 mb-1"
+        [(ngModel)]="newRawMaterial.supplier_id"
+        name="supplier_id"
+        required
+        #supplierId="ngModel"
+      >
+        <option [ngValue]="null" disabled>Select Supplier</option>
+        <option *ngFor="let sup of suppliers" [value]="sup.id">
+          {{ sup.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="supplierId.invalid && supplierId.touched"
+        class="text-red-500 text-sm mb-2"
+      >
+        Supplier is required.
+      </div>
+
+      <div class="flex justify-end space-x-2 mt-4">
+        <button
+          type="button"
+          (click)="closeAddRawMaterialModal()"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="rawMaterialForm.invalid"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

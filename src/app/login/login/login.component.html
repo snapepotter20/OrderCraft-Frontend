@@ -1,0 +1,89 @@
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-tr from-blue-100 to-indigo-200 px-4 sm:px-8 lg:px-16">
+  <div class="bg-white p-8 sm:p-10 md:p-12 rounded-xl shadow-xl w-full max-w-md animate-fade-in transition-all duration-300">
+    <h2 class="text-2xl font-bold text-center mb-6 text-indigo-700">
+      <i class="fas fa-lock mr-2"></i>Login
+    </h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Username -->
+      <div class="relative">
+        <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+        <input
+          formControlName="username"
+          type="text"
+          placeholder="Username"
+          class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <div
+          *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+          class="text-red-500 text-sm mt-1"
+        >
+          Username is required.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="relative">
+        <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Password"
+          class="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <i
+          class="fas"
+          [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+          (click)="togglePasswordVisibility()"
+          style="position: absolute; right: 12px; top: 11px; cursor: pointer; color: #6b7280;"
+        ></i>
+        <div
+          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+          class="text-red-500 text-sm mt-1"
+        >
+          Password is required.
+        </div>
+      </div>
+
+      <!-- Error Message (with attempts left) -->
+      <div
+        *ngIf="errorMessage && !isLocked"
+        class="bg-red-100 text-red-700 px-4 py-2 rounded-md text-sm font-medium"
+        [innerHTML]="errorMessage"
+      ></div>
+
+      <!-- Lock Message -->
+      <div
+        *ngIf="isLocked"
+        class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md text-sm font-semibold"
+      >
+        <i class="fas fa-lock mr-1"></i>{{ lockMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || loading || isLocked"
+        class="w-full bg-indigo-600 text-white py-2.5 rounded-md hover:bg-indigo-700 transition duration-200 font-medium tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ng-container *ngIf="!loading; else loadingTemplate">
+          <i class="fas fa-sign-in-alt mr-2"></i> Login
+        </ng-container>
+        <ng-template #loadingTemplate>
+          <i class="fas fa-spinner fa-spin mr-2"></i> Logging in...
+        </ng-template>
+      </button>
+
+      <!-- Forgot Password -->
+      <div class="text-center mt-4">
+        <button
+          type="button"
+          (click)="navigateToForgotPassword()"
+          class="cursor-pointer hover:underline text-sm font-medium"
+        >
+          Reset Password / Forgot Password?
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
