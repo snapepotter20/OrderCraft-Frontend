@@ -1,10 +1,3 @@
-// import { HttpInterceptorFn } from '@angular/common/http';
-
-// export const authInterceptor: HttpInterceptorFn = (req, next) => {
-//   return next(req);
-// };
-
-
 import { Injectable } from '@angular/core';
 import {
   HttpEvent,
@@ -38,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         // ❌ Handle Unauthorized or Forbidden globally
         if (error.status === 401 || error.status === 403) {
-          this.tokenService.clearToken(); // optional → clear invalid token
+          this.tokenService.clearToken();
           this.router.navigate(['/']); // redirect to login
         }
         return throwError(() => error);
