@@ -30,4 +30,8 @@ export class TokenService {
     const decoded = this.getDecodedToken();
     return decoded?.sub || null;
   }
+
+    clearToken(): void {
+    localStorage.removeItem('token');
+  }
 }

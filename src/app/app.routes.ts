@@ -19,7 +19,12 @@ export const routes: Routes = [
   // { path: 'procurement-dashboard', component: ProcurementdashboardComponent, canActivate: [AuthGuard]  },
   // { path: 'inventory-dashboard', component: InventorydashboardComponent, canActivate: [AuthGuard]  },
   // { path: 'production-dashboard', component: ProductiondashboardComponent, canActivate: [AuthGuard]  },
-  // { path: 'track-order/:id', component: TrackOrderComponent , canActivate: [AuthGuard] },
+  {
+    path: 'track-order/:id',
+    component: TrackOrderComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['ROLE_PROCUREMENT_OFFICER'] },
+  },
   {
     path: 'admin-dashboard',
     component: AdmindashboardComponent,
