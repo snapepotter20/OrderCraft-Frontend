@@ -93,4 +93,11 @@ export class ProductionService {
       responseType: 'blob',
     });
   }
+
+  generateProductionEfficiencyReport(): Observable<Blob> {
+  return this.http.get(`${this.baseUrl}/generate-production-efficiency-report`, {
+    responseType: 'blob',
+  });
+}
+
 }

@@ -40,14 +40,14 @@
 //   });
 // }
 
-
-
 // }
-
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductionSchedule, ProductionService } from '../../services/production.service';
+import {
+  ProductionSchedule,
+  ProductionService,
+} from '../../services/production.service';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions } from 'chart.js';
 
@@ -56,16 +56,22 @@ import { ChartData, ChartOptions } from 'chart.js';
   standalone: true,
   imports: [CommonModule, NgChartsModule],
   templateUrl: './scheduled-products.component.html',
-  styleUrls: ['./scheduled-products.component.css']
+  styleUrls: ['./scheduled-products.component.css'],
 })
 export class ScheduledProductsComponent implements OnInit {
-
   scheduledProducts: ProductionSchedule[] = [];
   loading = true;
 
   // ✅ Chart data
   statusChartData: ChartData<'doughnut'> = {
-    labels: ['Scheduled', 'In Progress', 'Quality Check', 'Ready', 'Dispatched' , 'Delivered'],
+    labels: [
+      'Scheduled',
+      'In Progress',
+      'Quality Check',
+      'Ready',
+      'Dispatched',
+      'Delivered',
+    ],
     datasets: [
       {
         data: [0, 0, 0, 0, 0], // initial values
@@ -74,11 +80,11 @@ export class ScheduledProductsComponent implements OnInit {
           '#3B82F6', // blue
           '#FF0000', // red
           '#FB923C', // orange
-          '#9333EA',  // purple
+          '#9333EA', // purple
           '#22C55E', // green
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   };
 
   statusChartOptions: ChartOptions<'doughnut'> = {
@@ -87,10 +93,10 @@ export class ScheduledProductsComponent implements OnInit {
       legend: {
         position: 'bottom',
         labels: {
-          font: { size: 12 }
-        }
-      }
-    }
+          font: { size: 12 },
+        },
+      },
+    },
   };
 
   constructor(private productionService: ProductionService) {}
@@ -105,7 +111,7 @@ export class ScheduledProductsComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching scheduled products', err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -113,11 +119,11 @@ export class ScheduledProductsComponent implements OnInit {
   dispatch(id: number) {
     this.productionService.dispatchProduct(id).subscribe({
       next: (updated) => {
-        const idx = this.scheduledProducts.findIndex(p => p.psId === id);
+        const idx = this.scheduledProducts.findIndex((p) => p.psId === id);
         if (idx > -1) this.scheduledProducts[idx] = updated;
         this.updateChartData(); // update chart after dispatch
       },
-      error: (err) => console.error('Dispatch failed', err)
+      error: (err) => console.error('Dispatch failed', err),
     });
   }
 
@@ -132,8 +138,10 @@ export class ScheduledProductsComponent implements OnInit {
       DELIVERED: 0,
     };
 
-    this.scheduledProducts.forEach(sp => {
-      if (statusCounts[sp.psStatus as keyof typeof statusCounts] !== undefined) {
+    this.scheduledProducts.forEach((sp) => {
+      if (
+        statusCounts[sp.psStatus as keyof typeof statusCounts] !== undefined
+      ) {
         statusCounts[sp.psStatus as keyof typeof statusCounts]++;
       }
     });
@@ -149,39 +157,64 @@ export class ScheduledProductsComponent implements OnInit {
             statusCounts.QUALITY_CHECK,
             statusCounts.READY,
             statusCounts.DISPATCHED,
-            statusCounts.DELIVERED
-          ]
-        }
-      ]
+            statusCounts.DELIVERED,
+          ],
+        },
+      ],
     };
   }
 
   exportXLS() {
-  this.productionService.exportDeliveredXLS().subscribe({
-    next: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'delivered_products.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => console.error('Export XLS failed', err)
-  });
-}
+    this.productionService.exportDeliveredXLS().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'delivered_products.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Export XLS failed', err),
+    });
+  }
 
-exportPDF() {
-  this.productionService.exportDeliveredPDF().subscribe({
-    next: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'delivered_products.pdf';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => console.error('Export PDF failed', err)
-  });
-}
+  exportPDF() {
+    this.productionService.exportDeliveredPDF().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'delivered_products.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Export PDF failed', err),
+    });
+  }
 
+  downloadEfficiencyReport(): void {
+    this.productionService.generateProductionEfficiencyReport().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        // Determine filename (optional)
+        const contentType = blob.type;
+        a.download =
+          contentType === 'application/pdf'
+            ? 'production_efficiency_report.pdf'
+            : 'production_efficiency_report.xlsx';
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to download efficiency report', err);
+        alert(
+          'Failed to download Production Efficiency Report. Please try again.'
+        );
+      },
+    });
+  }
 }
