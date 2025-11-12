@@ -50,6 +50,7 @@ import {
 } from '../../services/production.service';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions } from 'chart.js';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-scheduled-products',
@@ -199,7 +200,7 @@ export class ScheduledProductsComponent implements OnInit {
         const a = document.createElement('a');
         a.href = url;
 
-        // Determine filename (optional)
+        // Determine filename based on content type
         const contentType = blob.type;
         a.download =
           contentType === 'application/pdf'
@@ -208,12 +209,32 @@ export class ScheduledProductsComponent implements OnInit {
 
         a.click();
         window.URL.revokeObjectURL(url);
+
+        // ✅ Show SweetAlert2 success toast
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Production Efficiency Report downloaded successfully!',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       },
       error: (err) => {
         console.error('Failed to download efficiency report', err);
-        alert(
-          'Failed to download Production Efficiency Report. Please try again.'
-        );
+
+        // ❌ Show SweetAlert2 error toast
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to download Production Efficiency Report.',
+          text: 'Please try again later.',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       },
     });
   }
