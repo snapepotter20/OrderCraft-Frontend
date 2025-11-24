@@ -7,17 +7,88 @@
       (click)="toggleForm()"
       class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium px-4 py-2 rounded-full shadow-md hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-200 ease-in-out"
     >
-      <i
-        *ngIf="showForm"
-        class="fa-solid fa-xmark text-white"
-      ></i>
-      <i
-        *ngIf="!showForm"
-        class="fa-solid fa-plus text-white"
-      ></i>
+      <i *ngIf="showForm" class="fa-solid fa-xmark text-white"></i>
+      <i *ngIf="!showForm" class="fa-solid fa-plus text-white"></i>
       {{ showForm ? "Cancel" : "Create Supplier" }}
     </button>
   </h2>
+
+  <!-- Filters Section -->
+  <div class="p-4 bg-gray-100 mb-4 rounded-lg shadow">
+    <h3
+      class="text-lg font-semibold mb-3 text-gray-700 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-filter text-blue-600"></i> Filter Suppliers
+    </h3>
+
+    <div class="grid grid-cols-4 gap-4">
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="Search by Name"
+        [(ngModel)]="filters.supplier_name"
+        (input)="applyFilters()"
+      />
+
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="Search by Contact Name"
+        [(ngModel)]="filters.contact_name"
+        (input)="applyFilters()"
+      />
+
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="Email"
+        [(ngModel)]="filters.contact_email"
+        (input)="applyFilters()"
+      />
+
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="Phone"
+        [(ngModel)]="filters.phone"
+        (input)="applyFilters()"
+      />
+
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="City"
+        [(ngModel)]="filters.city"
+        (input)="applyFilters()"
+      />
+
+      <input
+        type="text"
+        class="p-2 border rounded-lg"
+        placeholder="State"
+        [(ngModel)]="filters.state"
+        (input)="applyFilters()"
+      />
+
+      <select
+        class="p-2 border rounded-lg"
+        [(ngModel)]="filters.rating"
+        (change)="applyFilters()"
+      >
+        <option value="">Rating (All)</option>
+        <option *ngFor="let r of [1, 2, 3, 4, 5]" [value]="r">
+          {{ r }} Stars
+        </option>
+      </select>
+
+      <button
+        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition"
+        (click)="resetFilters()"
+      >
+        Clear Filters
+      </button>
+    </div>
+  </div>
 
   <!-- Create / Edit Supplier Form -->
   <div
@@ -26,7 +97,11 @@
   >
     <h3 class="text-lg font-semibold mb-4 text-gray-700">
       <i
-        [ngClass]="isEditMode ? 'fa-solid fa-pen-to-square text-blue-600' : 'fa-solid fa-user-plus text-green-600'"
+        [ngClass]="
+          isEditMode
+            ? 'fa-solid fa-pen-to-square text-blue-600'
+            : 'fa-solid fa-user-plus text-green-600'
+        "
         class="mr-2"
       ></i>
       {{ isEditMode ? "Edit Supplier" : "Supplier Details" }}
@@ -102,7 +177,9 @@
       class="mt-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center gap-2"
     >
       <i
-        [ngClass]="isEditMode ? 'fa-solid fa-pen-to-square' : 'fa-solid fa-check'"
+        [ngClass]="
+          isEditMode ? 'fa-solid fa-pen-to-square' : 'fa-solid fa-check'
+        "
       ></i>
       {{ isEditMode ? "Update Supplier" : "Save Supplier" }}
     </button>
@@ -135,7 +212,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let s of suppliers"
+          *ngFor="let s of filteredSuppliers"
           class="odd:bg-gray-50 even:bg-white hover:bg-blue-50 transition"
         >
           <td class="p-3 text-gray-700">{{ s.supplier_id }}</td>

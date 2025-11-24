@@ -22,6 +22,18 @@ export class ManageSuppliersComponent implements OnInit {
 
   newSupplier: any = this.getEmptySupplier();
 
+  filteredSuppliers: any[] = [];
+
+  filters = {
+    supplier_name: '',
+    contact_name: '',
+    contact_email: '',
+    phone: '',
+    city: '',
+    state: '',
+    rating: '',
+  };
+
   constructor(private procurementService: ProcurementService) {}
 
   ngOnInit(): void {
@@ -43,10 +55,26 @@ export class ManageSuppliersComponent implements OnInit {
     };
   }
 
+  // loadSuppliers() {
+  //   this.procurementService.getAllSuppliers().subscribe({
+  //     next: (data) => {
+  //       this.suppliers = data;
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching suppliers', err);
+  //       this.error = 'Failed to load suppliers.';
+  //       this.loading = false;
+  //       Swal.fire('Error', 'Failed to load suppliers.', 'error');
+  //     },
+  //   });
+  // }
+
   loadSuppliers() {
     this.procurementService.getAllSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
+        this.filteredSuppliers = data; // default
         this.loading = false;
       },
       error: (err) => {
@@ -286,5 +314,47 @@ export class ManageSuppliersComponent implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
       });
+  }
+
+  applyFilters() {
+    this.filteredSuppliers = this.suppliers.filter((s) => {
+      return (
+        (this.filters.supplier_name === '' ||
+          s.supplier_name
+            .toLowerCase()
+            .includes(this.filters.supplier_name.toLowerCase())) &&
+        (this.filters.contact_name === '' ||
+          s.contact_name
+            .toLowerCase()
+            .includes(this.filters.contact_name.toLowerCase())) &&
+        (this.filters.contact_email === '' ||
+          s.contact_email
+            .toLowerCase()
+            .includes(this.filters.contact_email.toLowerCase())) &&
+        (this.filters.phone === '' || s.phone.includes(this.filters.phone)) &&
+        (this.filters.city === '' ||
+          s.address?.addressCity
+            .toLowerCase()
+            .includes(this.filters.city.toLowerCase())) &&
+        (this.filters.state === '' ||
+          s.address?.addressState
+            .toLowerCase()
+            .includes(this.filters.state.toLowerCase())) &&
+        (this.filters.rating === '' || s.rating == this.filters.rating)
+      );
+    });
+  }
+
+  resetFilters() {
+    this.filters = {
+      supplier_name: '',
+      contact_name: '',
+      contact_email: '',
+      phone: '',
+      city: '',
+      state: '',
+      rating: '',
+    };
+    this.filteredSuppliers = this.suppliers;
   }
 }
