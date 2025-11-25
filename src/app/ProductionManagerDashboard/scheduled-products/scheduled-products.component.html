@@ -1,154 +1,204 @@
-<div class="max-w-6xl mx-auto mt-6 p-6 bg-white rounded-2xl shadow-lg">
-  <h2 class="text-2xl font-bold text-blue-900 mb-2 flex items-center gap-2">
-    📅 Production Lifecycle
-  </h2>
-  <p class="text-gray-600 mb-6">
-    Track the journey of each product through production.
-  </p>
-  <!-- Export Buttons -->
-  <div class="flex justify-end gap-4 mb-4" *ngIf="scheduledProducts.length > 0">
-    <button
-      (click)="exportXLS()"
-      class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-    >
-      📗 Export XLS
-    </button>
+<div
+  class="max-w-6xl mx-auto mt-8 p-8 bg-white rounded-3xl shadow-xl border border-gray-100"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="text-3xl font-extrabold text-blue-900 tracking-tight flex items-center gap-2">
+        📅 Production Lifecycle
+      </h2>
+      <p class="text-gray-600 mt-1">
+        Track the journey of each product through production.
+      </p>
+    </div>
 
-    <button
-      (click)="exportPDF()"
-      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+    <div
+      class="flex gap-3"
+      *ngIf="scheduledProducts.length > 0"
     >
-      📕 Export PDF
-    </button>
-    <button
-      (click)="downloadEfficiencyReport()"
-      class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition"
-    >
-      📊 Efficiency Report
-    </button>
+      <button
+        (click)="exportXLS()"
+        class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition flex items-center gap-2"
+      >
+        📗 Export XLS
+      </button>
+
+      <button
+        (click)="exportPDF()"
+        class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition flex items-center gap-2"
+      >
+        📕 Export PDF
+      </button>
+
+      <button
+        (click)="downloadEfficiencyReport()"
+        class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition flex items-center gap-2"
+      >
+        📊 Efficiency Report
+      </button>
+    </div>
   </div>
 
   <!-- Chart Section -->
-  <div *ngIf="!loading && scheduledProducts.length > 0" class="mb-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Status Overview</h3>
-    <div class="flex justify-center">
-      <div class="w-64 h-64">
-        <!-- 👈 Added wrapper to control chart size -->
+  <div *ngIf="!loading && scheduledProducts.length > 0" class="mb-8">
+    <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+      📊 Status Overview
+    </h3>
+
+    <div
+      class="flex justify-center p-6 bg-gray-50 rounded-2xl shadow-inner border border-gray-200"
+    >
+      <div class="w-72 h-72">
         <canvas
           baseChart
           [data]="statusChartData"
           [options]="statusChartOptions"
           [type]="'doughnut'"
-        >
-        </canvas>
+        ></canvas>
       </div>
     </div>
   </div>
 
   <!-- Loading -->
-  <div *ngIf="loading" class="text-center p-6 text-blue-700">⏳ Loading...</div>
+  <div
+    *ngIf="loading"
+    class="text-center text-blue-700 p-6 text-lg font-semibold"
+  >
+    ⏳ Loading...
+  </div>
 
   <!-- No Data -->
   <div
     *ngIf="!loading && scheduledProducts.length === 0"
-    class="text-center p-6 text-gray-500"
+    class="text-center p-10 text-gray-500 text-lg font-medium bg-gray-50 rounded-xl border"
   >
     🚫 No schedules found.
   </div>
 
   <!-- Table -->
   <div *ngIf="scheduledProducts.length > 0" class="overflow-x-auto">
-    <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-      <thead class="bg-gradient-to-r from-blue-800 to-blue-600 text-white">
-        <tr>
-          <th class="p-3 text-left">ID</th>
-          <th class="p-3 text-left">Product</th>
-          <th class="p-3 text-left">Qty</th>
-          <th class="p-3 text-left">Start</th>
-          <th class="p-3 text-left">End</th>
-          <th class="p-3 text-left">Deadline</th>
-          <th class="p-3 text-left">Progress</th>
-          <th class="p-3 text-left">Status</th>
-          <th class="p-3 text-left">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let sp of scheduledProducts"
-          class="border-b hover:bg-blue-50"
+    <div class="rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+      <table class="min-w-full bg-white">
+        <thead
+          class="bg-gradient-to-r from-blue-700 to-blue-500 text-white shadow"
         >
-          <td class="p-3">{{ sp.psId }}</td>
-          <td class="p-3">{{ sp.psProductId?.productName }}</td>
-          <td class="p-3">{{ sp.psQuantity }}</td>
-          <td class="p-3">{{ sp.psStartDate }}</td>
-          <td class="p-3">{{ sp.psEndDate }}</td>
-          <td class="p-3">
-            {{ sp.psDeadline || "Order scheduled ages back" }}
-          </td>
+          <tr>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">ID</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Product
+            </th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">Qty</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Start
+            </th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">End</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Deadline
+            </th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Progress
+            </th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Status
+            </th>
+            <th class="p-4 text-center text-sm font-semibold tracking-wide">
+              Action
+            </th>
+          </tr>
+        </thead>
 
-          <!-- Progress bar -->
-          <td class="p-3 w-40">
-            <div class="w-full bg-gray-200 rounded-full h-3">
-              <div
-                class="h-3 rounded-full bg-green-500"
-                [style.width.%]="
-                  ((sp.completedQuantity ?? 0) / (sp.psQuantity ?? 1)) * 100
-                "
-              ></div>
-            </div>
-            <small>{{ sp.completedQuantity }}/{{ sp.psQuantity }}</small>
-          </td>
+        <tbody>
+          <tr
+            *ngFor="let sp of scheduledProducts"
+            class="odd:bg-gray-50 even:bg-white transition hover:bg-blue-50/70"
+          >
+            <!-- ID -->
+            <td class="p-4 text-gray-800 font-semibold">#{{ sp.psId }}</td>
 
-          <!-- Status pill -->
-          <td class="p-3">
-            <span
-              class="px-3 py-1 text-sm rounded-full font-medium"
-              [ngClass]="{
-                'bg-yellow-100 text-yellow-700': sp.psStatus === 'SCHEDULED',
-                'bg-blue-100 text-blue-700': sp.psStatus === 'IN_PROGRESS',
-                'bg-orange-100 text-orange-700':
-                  sp.psStatus === 'QUALITY_CHECK',
-                'bg-green-100 text-green-700': sp.psStatus === 'READY',
-                'bg-purple-100 text-purple-700': sp.psStatus === 'DISPATCHED'
-              }"
-            >
-              {{ sp.psStatus }}
-            </span>
-          </td>
+            <!-- Product -->
+            <td class="p-4 text-gray-700">
+              {{ sp.psProductId?.productName }}
+            </td>
 
-          <!-- Dispatch -->
-          <td class="p-3">
-            <ng-container *ngIf="sp.psStatus === 'READY'; else notReady">
-              <button
-                (click)="dispatch(sp.psId)"
-                class="px-4 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="sp.completedQuantity !== sp.psQuantity"
-              >
-                Dispatch
-              </button>
-            </ng-container>
+            <!-- Quantity -->
+            <td class="p-4 text-gray-700">{{ sp.psQuantity }}</td>
 
-            <ng-template #notReady>
+            <!-- Dates -->
+            <td class="p-4 text-gray-600">{{ sp.psStartDate }}</td>
+            <td class="p-4 text-gray-600">{{ sp.psEndDate }}</td>
+
+            <!-- Deadline -->
+            <td class="p-4 text-gray-700 font-medium">
+              {{ sp.psDeadline || "Order scheduled ages back" }}
+            </td>
+
+            <!-- Progress -->
+            <td class="p-4 w-40">
+              <div class="flex flex-col">
+                <div class="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-green-500 rounded-full transition-all duration-500"
+                    [style.width.%]="
+                      ((sp.completedQuantity ?? 0) / (sp.psQuantity ?? 1)) * 100
+                    "
+                  ></div>
+                </div>
+                <span class="mt-1 text-xs text-gray-600">
+                  {{ sp.completedQuantity }}/{{ sp.psQuantity }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="p-4">
               <span
-                *ngIf="
-                  sp.psStatus === 'DISPATCHED' || sp.psStatus === 'DELIVERED'
-                "
-                class="text-green-600 font-semibold"
+                class="px-3 py-1 text-sm rounded-full font-medium shadow-sm"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': sp.psStatus === 'SCHEDULED',
+                  'bg-blue-100 text-blue-700': sp.psStatus === 'IN_PROGRESS',
+                  'bg-orange-100 text-orange-700':
+                    sp.psStatus === 'QUALITY_CHECK',
+                  'bg-green-100 text-green-700': sp.psStatus === 'READY',
+                  'bg-purple-100 text-purple-700':
+                    sp.psStatus === 'DISPATCHED'
+                }"
               >
-                ✅ Product dispatched
+                {{ sp.psStatus }}
               </span>
-              <span
-                *ngIf="
-                  sp.psStatus !== 'DISPATCHED' && sp.psStatus !== 'DELIVERED'
-                "
-                class="text-gray-500 italic"
-              >
-                Still in production
-              </span>
-            </ng-template>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+
+            <!-- Action -->
+            <td class="p-4 text-center">
+              <!-- Ready to dispatch -->
+              <ng-container *ngIf="sp.psStatus === 'READY'; else notReady">
+                <button
+                  (click)="dispatch(sp.psId)"
+                  class="px-4 py-1 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  [disabled]="sp.completedQuantity !== sp.psQuantity"
+                >
+                  Dispatch
+                </button>
+              </ng-container>
+
+              <ng-template #notReady>
+                <span
+                  *ngIf="sp.psStatus === 'DISPATCHED' || sp.psStatus === 'DELIVERED'"
+                  class="text-green-600 font-semibold"
+                >
+                  ✅ Dispatched
+                </span>
+
+                <span
+                  *ngIf="sp.psStatus !== 'DISPATCHED' && sp.psStatus !== 'DELIVERED'"
+                  class="text-gray-500 italic"
+                >
+                  In progress...
+                </span>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
