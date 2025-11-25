@@ -13,83 +13,6 @@
     </button>
   </h2>
 
-  <!-- Filters Section -->
-  <div class="p-4 bg-gray-100 mb-4 rounded-lg shadow">
-    <h3
-      class="text-lg font-semibold mb-3 text-gray-700 flex items-center gap-2"
-    >
-      <i class="fa-solid fa-filter text-blue-600"></i> Filter Suppliers
-    </h3>
-
-    <div class="grid grid-cols-4 gap-4">
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="Search by Name"
-        [(ngModel)]="filters.supplier_name"
-        (input)="applyFilters()"
-      />
-
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="Search by Contact Name"
-        [(ngModel)]="filters.contact_name"
-        (input)="applyFilters()"
-      />
-
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="Email"
-        [(ngModel)]="filters.contact_email"
-        (input)="applyFilters()"
-      />
-
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="Phone"
-        [(ngModel)]="filters.phone"
-        (input)="applyFilters()"
-      />
-
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="City"
-        [(ngModel)]="filters.city"
-        (input)="applyFilters()"
-      />
-
-      <input
-        type="text"
-        class="p-2 border rounded-lg"
-        placeholder="State"
-        [(ngModel)]="filters.state"
-        (input)="applyFilters()"
-      />
-
-      <select
-        class="p-2 border rounded-lg"
-        [(ngModel)]="filters.rating"
-        (change)="applyFilters()"
-      >
-        <option value="">Rating (All)</option>
-        <option *ngFor="let r of [1, 2, 3, 4, 5]" [value]="r">
-          {{ r }} Stars
-        </option>
-      </select>
-
-      <button
-        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition"
-        (click)="resetFilters()"
-      >
-        Clear Filters
-      </button>
-    </div>
-  </div>
-
   <!-- Create / Edit Supplier Form -->
   <div
     *ngIf="showForm"
@@ -183,6 +106,114 @@
       ></i>
       {{ isEditMode ? "Update Supplier" : "Save Supplier" }}
     </button>
+  </div>
+
+  <!-- Filters Section -->
+  <div
+    class="p-5 mb-6 rounded-2xl bg-white/70 backdrop-blur-md shadow-xl border border-gray-200"
+  >
+    <h3
+      class="text-lg font-semibold mb-4 text-gray-700 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-filter text-blue-600"></i>
+      Filter Suppliers
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <!-- Filter Input -->
+      <div class="relative">
+        <i class="fa-solid fa-user text-gray-400 absolute left-3 top-3"></i>
+        <input
+          type="text"
+          placeholder="Supplier Name"
+          [(ngModel)]="filters.supplier_name"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <div class="relative">
+        <i
+          class="fa-solid fa-address-book text-gray-400 absolute left-3 top-3"
+        ></i>
+        <input
+          type="text"
+          placeholder="Contact Name"
+          [(ngModel)]="filters.contact_name"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <div class="relative">
+        <i class="fa-solid fa-envelope text-gray-400 absolute left-3 top-3"></i>
+        <input
+          type="email"
+          placeholder="Email"
+          [(ngModel)]="filters.contact_email"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <div class="relative">
+        <i class="fa-solid fa-phone text-gray-400 absolute left-3 top-3"></i>
+        <input
+          type="text"
+          placeholder="Phone"
+          [(ngModel)]="filters.phone"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <div class="relative">
+        <i class="fa-solid fa-city text-gray-400 absolute left-3 top-3"></i>
+        <input
+          type="text"
+          placeholder="City"
+          [(ngModel)]="filters.city"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <div class="relative">
+        <i
+          class="fa-solid fa-location-dot text-gray-400 absolute left-3 top-3"
+        ></i>
+        <input
+          type="text"
+          placeholder="State"
+          [(ngModel)]="filters.state"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white transition"
+        />
+      </div>
+
+      <!-- Rating Dropdown -->
+      <div class="relative">
+        <i class="fa-solid fa-star text-yellow-500 absolute left-3 top-3"></i>
+        <select
+          [(ngModel)]="filters.rating"
+          (change)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 bg-white transition cursor-pointer"
+        >
+          <option value="">Rating (All)</option>
+          <option *ngFor="let r of [1, 2, 3, 4, 5]" [value]="r">
+            {{ r }} Stars
+          </option>
+        </select>
+      </div>
+
+      <!-- Clear Button -->
+      <button
+        (click)="resetFilters()"
+        class="bg-red-500 col-span-1 md:col-span-3 lg:col-span-1 text-white py-2 px-4 rounded-xl shadow hover:bg-red-600 transition flex items-center justify-center gap-2"
+      >
+        <i class="fa-solid fa-circle-xmark"></i> Clear Filters
+      </button>
+    </div>
   </div>
 
   <!-- Supplier List -->
