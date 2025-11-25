@@ -4,45 +4,46 @@
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h2 class="text-3xl font-extrabold text-blue-900 tracking-tight flex items-center gap-2">
-        📅 Production Lifecycle
+      <h2
+        class="text-3xl font-extrabold text-blue-900 tracking-tight flex items-center gap-2"
+      >
+        <i class="fa-solid fa-industry"></i> Production Lifecycle
       </h2>
       <p class="text-gray-600 mt-1">
         Track the journey of each product through production.
       </p>
     </div>
 
-    <div
-      class="flex gap-3"
-      *ngIf="scheduledProducts.length > 0"
-    >
+    <div class="flex gap-3" *ngIf="scheduledProducts.length > 0">
       <button
         (click)="exportXLS()"
         class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition flex items-center gap-2"
       >
-        📗 Export XLS
+        <i class="fa-solid fa-file-excel"></i> Export XLS
       </button>
 
       <button
         (click)="exportPDF()"
         class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition flex items-center gap-2"
       >
-        📕 Export PDF
+        <i class="fa-solid fa-file-pdf"></i> Export PDF
       </button>
 
       <button
         (click)="downloadEfficiencyReport()"
         class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition flex items-center gap-2"
       >
-        📊 Efficiency Report
+        <i class="fa-solid fa-chart-line"></i> Efficiency Report
       </button>
     </div>
   </div>
 
   <!-- Chart Section -->
   <div *ngIf="!loading && scheduledProducts.length > 0" class="mb-8">
-    <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-      📊 Status Overview
+    <h3
+      class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-chart-pie"></i> Status Overview
     </h3>
 
     <div
@@ -62,17 +63,17 @@
   <!-- Loading -->
   <div
     *ngIf="loading"
-    class="text-center text-blue-700 p-6 text-lg font-semibold"
+    class="text-center text-blue-700 p-6 text-lg font-semibold flex justify-center gap-2"
   >
-    ⏳ Loading...
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading...
   </div>
 
   <!-- No Data -->
   <div
     *ngIf="!loading && scheduledProducts.length === 0"
-    class="text-center p-10 text-gray-500 text-lg font-medium bg-gray-50 rounded-xl border"
+    class="text-center p-10 text-gray-500 text-lg font-medium bg-gray-50 rounded-xl border flex justify-center items-center gap-2"
   >
-    🚫 No schedules found.
+    <i class="fa-solid fa-ban text-red-500"></i> No schedules found.
   </div>
 
   <!-- Table -->
@@ -83,15 +84,21 @@
           class="bg-gradient-to-r from-blue-700 to-blue-500 text-white shadow"
         >
           <tr>
-            <th class="p-4 text-left text-sm font-semibold tracking-wide">ID</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              ID
+            </th>
             <th class="p-4 text-left text-sm font-semibold tracking-wide">
               Product
             </th>
-            <th class="p-4 text-left text-sm font-semibold tracking-wide">Qty</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              Qty
+            </th>
             <th class="p-4 text-left text-sm font-semibold tracking-wide">
               Start
             </th>
-            <th class="p-4 text-left text-sm font-semibold tracking-wide">End</th>
+            <th class="p-4 text-left text-sm font-semibold tracking-wide">
+              End
+            </th>
             <th class="p-4 text-left text-sm font-semibold tracking-wide">
               Deadline
             </th>
@@ -112,22 +119,17 @@
             *ngFor="let sp of scheduledProducts"
             class="odd:bg-gray-50 even:bg-white transition hover:bg-blue-50/70"
           >
-            <!-- ID -->
             <td class="p-4 text-gray-800 font-semibold">#{{ sp.psId }}</td>
 
-            <!-- Product -->
             <td class="p-4 text-gray-700">
               {{ sp.psProductId?.productName }}
             </td>
 
-            <!-- Quantity -->
             <td class="p-4 text-gray-700">{{ sp.psQuantity }}</td>
 
-            <!-- Dates -->
             <td class="p-4 text-gray-600">{{ sp.psStartDate }}</td>
             <td class="p-4 text-gray-600">{{ sp.psEndDate }}</td>
 
-            <!-- Deadline -->
             <td class="p-4 text-gray-700 font-medium">
               {{ sp.psDeadline || "Order scheduled ages back" }}
             </td>
@@ -135,7 +137,9 @@
             <!-- Progress -->
             <td class="p-4 w-40">
               <div class="flex flex-col">
-                <div class="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  class="h-3 w-full bg-gray-200 rounded-full overflow-hidden"
+                >
                   <div
                     class="h-full bg-green-500 rounded-full transition-all duration-500"
                     [style.width.%]="
@@ -159,40 +163,52 @@
                   'bg-orange-100 text-orange-700':
                     sp.psStatus === 'QUALITY_CHECK',
                   'bg-green-100 text-green-700': sp.psStatus === 'READY',
-                  'bg-purple-100 text-purple-700':
-                    sp.psStatus === 'DISPATCHED'
+                  'bg-purple-100 text-purple-700': sp.psStatus === 'DISPATCHED'
                 }"
               >
+                <i
+                  class="fa-solid"
+                  [ngClass]="{
+                    'fa-clock': sp.psStatus === 'SCHEDULED',
+                    'fa-spinner fa-spin': sp.psStatus === 'IN_PROGRESS',
+                    'fa-magnifying-glass': sp.psStatus === 'QUALITY_CHECK',
+                    'fa-check-circle': sp.psStatus === 'READY',
+                    'fa-truck-fast': sp.psStatus === 'DISPATCHED'
+                  }"
+                ></i>
                 {{ sp.psStatus }}
               </span>
             </td>
 
             <!-- Action -->
             <td class="p-4 text-center">
-              <!-- Ready to dispatch -->
               <ng-container *ngIf="sp.psStatus === 'READY'; else notReady">
                 <button
                   (click)="dispatch(sp.psId)"
-                  class="px-4 py-1 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  class="px-4 py-1 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                   [disabled]="sp.completedQuantity !== sp.psQuantity"
                 >
-                  Dispatch
+                  <i class="fa-solid fa-truck"></i> Dispatch
                 </button>
               </ng-container>
 
               <ng-template #notReady>
                 <span
-                  *ngIf="sp.psStatus === 'DISPATCHED' || sp.psStatus === 'DELIVERED'"
-                  class="text-green-600 font-semibold"
+                  *ngIf="
+                    sp.psStatus === 'DISPATCHED' || sp.psStatus === 'DELIVERED'
+                  "
+                  class="text-green-600 font-semibold flex items-center gap-1"
                 >
-                  ✅ Dispatched
+                  <i class="fa-solid fa-circle-check"></i> Dispatched
                 </span>
 
                 <span
-                  *ngIf="sp.psStatus !== 'DISPATCHED' && sp.psStatus !== 'DELIVERED'"
-                  class="text-gray-500 italic"
+                  *ngIf="
+                    sp.psStatus !== 'DISPATCHED' && sp.psStatus !== 'DELIVERED'
+                  "
+                  class="text-gray-500 italic flex items-center gap-1"
                 >
-                  In progress...
+                  <i class="fa-solid fa-hourglass-half"></i> In progress...
                 </span>
               </ng-template>
             </td>
