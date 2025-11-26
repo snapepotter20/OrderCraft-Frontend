@@ -201,7 +201,7 @@
         >
           <option value="">Rating (All)</option>
           <option *ngFor="let r of [1, 2, 3, 4, 5]" [value]="r">
-            {{ r }} Stars
+            {{ r }} {{ r === 1 ? "Star" : "Stars" }}
           </option>
         </select>
       </div>
