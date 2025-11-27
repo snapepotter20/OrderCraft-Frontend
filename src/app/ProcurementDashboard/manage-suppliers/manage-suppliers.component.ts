@@ -55,26 +55,11 @@ export class ManageSuppliersComponent implements OnInit {
     };
   }
 
-  // loadSuppliers() {
-  //   this.procurementService.getAllSuppliers().subscribe({
-  //     next: (data) => {
-  //       this.suppliers = data;
-  //       this.loading = false;
-  //     },
-  //     error: (err) => {
-  //       console.error('Error fetching suppliers', err);
-  //       this.error = 'Failed to load suppliers.';
-  //       this.loading = false;
-  //       Swal.fire('Error', 'Failed to load suppliers.', 'error');
-  //     },
-  //   });
-  // }
-
   loadSuppliers() {
     this.procurementService.getAllSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
-        this.filteredSuppliers = data; // default
+        this.filteredSuppliers = data;
         this.loading = false;
       },
       error: (err) => {
@@ -97,7 +82,7 @@ export class ManageSuppliersComponent implements OnInit {
   }
 
   editSupplier(supplier: any) {
-    this.newSupplier = { ...supplier };
+    this.newSupplier = JSON.parse(JSON.stringify(supplier)); // deep copy
     this.isEditMode = true;
     this.showForm = true;
   }
@@ -118,7 +103,7 @@ export class ManageSuppliersComponent implements OnInit {
             Swal.fire('Deleted!', 'Supplier deleted successfully!', 'success');
             this.loadSuppliers();
           },
-          error: (err: any) => {
+          error: (err) => {
             console.error('Error deleting supplier', err);
             Swal.fire('Error', 'Failed to delete supplier.', 'error');
           },
@@ -127,61 +112,46 @@ export class ManageSuppliersComponent implements OnInit {
     });
   }
 
-  // ✅ Email validation
+  // Email validation
   isValidEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   }
 
-  // ✅ Phone validation (10 digits)
+  // Phone validation
   isValidPhone(phone: string): boolean {
     return /^\d{10}$/.test(phone);
   }
 
-  // ✅ Get field value
+  // Fully dynamic getFieldValue (supports nested fields)
   private getFieldValue(field: string): any {
-    switch (field) {
-      case 'supplier_name':
-        return this.newSupplier.supplier_name;
-      case 'contact_name':
-        return this.newSupplier.contact_name;
-      case 'contact_email':
-        return this.newSupplier.contact_email;
-      case 'phone':
-        return this.newSupplier.phone;
-      case 'street':
-        return this.newSupplier.address.addressStreet;
-      case 'city':
-        return this.newSupplier.address.addressCity;
-      case 'state':
-        return this.newSupplier.address.addressState;
-      default:
-        return '';
-    }
+    return field.split('.').reduce((obj, key) => obj?.[key], this.newSupplier);
   }
 
-  // ✅ Dynamic input class
+  // Dynamic input class
   getInputClass(field: string): string {
-    if (!this.formSubmitted) {
-      return 'p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none';
-    }
+    const base = 'p-3 border rounded-lg outline-none focus:ring-2 transition';
+
+    if (!this.formSubmitted) return `${base} border-gray-300 focus:ring-blue-400`;
 
     const value = this.getFieldValue(field);
-    if (
+
+    const invalid =
       !value ||
       (field === 'contact_email' && !this.isValidEmail(value)) ||
-      (field === 'phone' && !this.isValidPhone(value))
-    ) {
-      return 'p-3 border rounded-lg border-red-500 focus:ring-2 focus:ring-red-400 outline-none';
+      (field === 'phone' && !this.isValidPhone(value));
+
+    if (invalid) {
+      return `${base} border-red-500 focus:ring-red-400`;
     }
 
-    return 'p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none';
+    return `${base} border-gray-300 focus:ring-blue-400`;
   }
 
   saveSupplier() {
     this.formSubmitted = true;
 
-    // Frontend Validations
+    // Required fields check
     if (
       !this.newSupplier.supplier_name ||
       !this.newSupplier.contact_name ||
@@ -196,20 +166,16 @@ export class ManageSuppliersComponent implements OnInit {
     }
 
     if (!this.isValidEmail(this.newSupplier.contact_email)) {
-      Swal.fire(
-        'Validation Error',
-        'Please enter a valid email address!',
-        'error'
-      );
+      Swal.fire('Validation Error', 'Invalid email!', 'error');
       return;
     }
 
     if (!this.isValidPhone(this.newSupplier.phone)) {
-      Swal.fire('Validation Error', 'Phone number must be 10 digits!', 'error');
+      Swal.fire('Validation Error', 'Phone must be 10 digits!', 'error');
       return;
     }
 
-    // Update Supplier
+    // Update
     if (this.isEditMode && this.newSupplier.supplier_id) {
       this.procurementService
         .updateSupplier(this.newSupplier.supplier_id, this.newSupplier)
@@ -220,13 +186,11 @@ export class ManageSuppliersComponent implements OnInit {
             this.loadSuppliers();
           },
           error: (err) => {
-            console.error('Error updating supplier', err);
-            const errorMsg = err.error?.message || 'Failed to update supplier.';
-            Swal.fire('Error', errorMsg, 'error');
+            Swal.fire('Error', err.error?.message || 'Failed to update.', 'error');
           },
         });
     } else {
-      // Create Supplier
+      // Create
       this.procurementService.createSupplier(this.newSupplier).subscribe({
         next: () => {
           Swal.fire('Created!', 'Supplier created successfully!', 'success');
@@ -234,13 +198,7 @@ export class ManageSuppliersComponent implements OnInit {
           this.loadSuppliers();
         },
         error: (err) => {
-          console.error('Error creating supplier', err);
-
-          Swal.fire(
-            'Error',
-            err.error?.message || 'Failed to create supplier.',
-            'error'
-          );
+          Swal.fire('Error', err.error?.message || 'Failed to create.', 'error');
         },
       });
     }
@@ -258,15 +216,7 @@ export class ManageSuppliersComponent implements OnInit {
     this.procurementService
       .updateSupplier(supplier.supplier_id, supplier)
       .subscribe({
-        next: () => {
-          console.log(
-            `Supplier ${supplier.supplier_name} rating updated to ${newRating}`
-          );
-        },
-        error: (err) => {
-          console.error('Error updating rating', err);
-          Swal.fire('Error', 'Failed to update rating.', 'error');
-        },
+        error: () => Swal.fire('Error', 'Failed to update rating.', 'error'),
       });
   }
 
@@ -274,72 +224,52 @@ export class ManageSuppliersComponent implements OnInit {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/pdf';
-    input.onchange = (event: any) => {
-      const file = event.target.files[0];
+
+    input.onchange = (e: any) => {
+      const file = e.target.files[0];
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
 
         this.procurementService.uploadContract(supplierId, formData).subscribe({
           next: () => {
-            Swal.fire(
-              'Uploaded!',
-              'Contract uploaded successfully!',
-              'success'
-            );
-            this.loadSuppliers(); // refresh supplier list
+            Swal.fire('Uploaded!', 'Contract uploaded successfully!', 'success');
+            this.loadSuppliers();
           },
-          error: (err) => {
-            console.error('Error uploading contract', err);
-            Swal.fire(
-              'Error',
-              err.error?.message || 'Failed to upload contract.',
-              'error'
-            );
-          },
+          error: (err) =>
+            Swal.fire('Error', err.error?.message || 'Upload failed', 'error'),
         });
       }
     };
+
     input.click();
   }
 
   onDownloadContract(supplierId: number) {
-    this.procurementService
-      .downloadContract(supplierId)
-      .subscribe((res: Blob) => {
-        const url = window.URL.createObjectURL(res);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'contract.pdf';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+    this.procurementService.downloadContract(supplierId).subscribe((res: Blob) => {
+      const url = window.URL.createObjectURL(res);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'contract.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   }
 
   applyFilters() {
     this.filteredSuppliers = this.suppliers.filter((s) => {
       return (
         (this.filters.supplier_name === '' ||
-          s.supplier_name
-            .toLowerCase()
-            .includes(this.filters.supplier_name.toLowerCase())) &&
+          s.supplier_name.toLowerCase().includes(this.filters.supplier_name.toLowerCase())) &&
         (this.filters.contact_name === '' ||
-          s.contact_name
-            .toLowerCase()
-            .includes(this.filters.contact_name.toLowerCase())) &&
+          s.contact_name.toLowerCase().includes(this.filters.contact_name.toLowerCase())) &&
         (this.filters.contact_email === '' ||
-          s.contact_email
-            .toLowerCase()
-            .includes(this.filters.contact_email.toLowerCase())) &&
+          s.contact_email.toLowerCase().includes(this.filters.contact_email.toLowerCase())) &&
         (this.filters.phone === '' || s.phone.includes(this.filters.phone)) &&
         (this.filters.city === '' ||
-          s.address?.addressCity
-            .toLowerCase()
-            .includes(this.filters.city.toLowerCase())) &&
+          s.address?.addressCity.toLowerCase().includes(this.filters.city.toLowerCase())) &&
         (this.filters.state === '' ||
-          s.address?.addressState
-            .toLowerCase()
-            .includes(this.filters.state.toLowerCase())) &&
+          s.address?.addressState.toLowerCase().includes(this.filters.state.toLowerCase())) &&
         (this.filters.rating === '' || s.rating == this.filters.rating)
       );
     });
