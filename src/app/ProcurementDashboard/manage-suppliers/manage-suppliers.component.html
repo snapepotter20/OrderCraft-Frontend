@@ -1,5 +1,7 @@
 <div class="p-6 bg-white shadow-xl rounded-2xl">
-  <h2 class="text-xl font-bold mb-4 text-gray-800 flex justify-between items-center">
+  <h2
+    class="text-xl font-bold mb-4 text-gray-800 flex justify-between items-center"
+  >
     Manage Suppliers
 
     <button
@@ -15,67 +17,165 @@
   <!-- ========================================================= -->
   <!-- 🔥 MODAL -->
   <!-- ========================================================= -->
-  <div *ngIf="showForm" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white w-full max-w-3xl p-6 rounded-2xl shadow-xl animate-fadeIn relative">
-      
-      <button (click)="toggleForm()" class="absolute top-3 right-3 text-gray-500 text-2xl hover:text-gray-700">
+  <div
+    *ngIf="showForm"
+    class="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+  >
+    <div
+      class="bg-white w-full max-w-3xl p-6 rounded-2xl shadow-xl animate-fadeIn relative"
+    >
+      <!-- Close Button -->
+      <button
+        (click)="toggleForm()"
+        class="absolute top-3 right-3 text-gray-500 text-2xl hover:text-gray-700"
+      >
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <h3 class="text-2xl font-bold mb-4 text-gray-800">
+      <!-- Modal Title -->
+      <h3 class="text-2xl font-bold mb-1 text-gray-800">
         <i
-          [ngClass]="isEditMode ? 'fa-solid fa-pen-to-square text-blue-600' : 'fa-solid fa-user-plus text-green-600'"
+          [ngClass]="
+            isEditMode
+              ? 'fa-solid fa-pen-to-square text-blue-600'
+              : 'fa-solid fa-user-plus text-green-600'
+          "
         ></i>
         {{ isEditMode ? "Edit Supplier" : "Supplier Details" }}
       </h3>
 
+      <!-- Required Fields Message -->
+      <p class="text-red-600 text-sm font-medium mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        All fields marked with <span class="text-red-600">*</span> are required.
+      </p>
+
+      <!-- Form Grid -->
       <div class="grid grid-cols-2 gap-4">
-        <input type="text" [(ngModel)]="newSupplier.supplier_name" placeholder="Supplier Name"
-               [ngClass]="getInputClass('supplier_name')" />
+        <!-- Supplier Name -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            Supplier Name <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.supplier_name"
+            placeholder="Enter supplier name"
+            [ngClass]="getInputClass('supplier_name')"
+          />
+        </div>
 
-        <input type="text" [(ngModel)]="newSupplier.contact_name" placeholder="Contact Name"
-               [ngClass]="getInputClass('contact_name')" />
+        <!-- Contact Name -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            Contact Name <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.contact_name"
+            placeholder="Enter contact name"
+            [ngClass]="getInputClass('contact_name')"
+          />
+        </div>
 
-        <input type="email" [(ngModel)]="newSupplier.contact_email" placeholder="Contact Email"
-               [ngClass]="getInputClass('contact_email')" />
+        <!-- Email -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            Contact Email <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="email"
+            [(ngModel)]="newSupplier.contact_email"
+            placeholder="Enter email"
+            [ngClass]="getInputClass('contact_email')"
+          />
+        </div>
 
-        <input type="text" [(ngModel)]="newSupplier.phone" placeholder="Phone"
-               [ngClass]="getInputClass('phone')" />
+        <!-- Phone -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            Phone <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.phone"
+            placeholder="Enter phone number"
+            [ngClass]="getInputClass('phone')"
+          />
+        </div>
 
-        <input type="text" [(ngModel)]="newSupplier.address.addressStreet"
-               placeholder="Street"
-               [ngClass]="getInputClass('address.addressStreet')" />
+        <!-- Street -->
+        <div class="col-span-2">
+          <label class="block text-gray-700 font-medium mb-1">
+            Street <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.address.addressStreet"
+            placeholder="Enter street"
+            [ngClass]="getInputClass('address.addressStreet')"
+          />
+        </div>
 
-        <input type="text" [(ngModel)]="newSupplier.address.addressCity"
-               placeholder="City"
-               [ngClass]="getInputClass('address.addressCity')" />
+        <!-- City -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            City <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.address.addressCity"
+            placeholder="Enter city"
+            [ngClass]="getInputClass('address.addressCity')"
+          />
+        </div>
 
-        <input type="text" [(ngModel)]="newSupplier.address.addressState"
-               placeholder="State"
-               [ngClass]="getInputClass('address.addressState')" />
+        <!-- State -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">
+            State <span class="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="newSupplier.address.addressState"
+            placeholder="Enter state"
+            [ngClass]="getInputClass('address.addressState')"
+          />
+        </div>
       </div>
 
+      <!-- Rating -->
       <div class="mt-4">
-        <label class="block text-gray-700 font-medium mb-1">Rating</label>
+        <label class="block text-gray-700 font-medium mb-1">
+          Rating <span class="text-red-600">*</span>
+        </label>
         <div class="flex gap-1">
-          <ng-container *ngFor="let star of [1,2,3,4,5]">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
             <i
               (click)="newSupplier.rating = star"
               class="fa-solid fa-star text-3xl cursor-pointer"
-              [ngClass]="star <= newSupplier.rating ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-400'"
+              [ngClass]="
+                star <= newSupplier.rating
+                  ? 'text-yellow-500'
+                  : 'text-gray-300 hover:text-yellow-400'
+              "
             ></i>
           </ng-container>
         </div>
       </div>
 
+      <!-- Submit -->
       <button
         (click)="saveSupplier()"
         class="mt-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 flex items-center gap-2"
       >
-        <i [ngClass]="isEditMode ? 'fa-solid fa-pen-to-square' : 'fa-solid fa-check'"></i>
+        <i
+          [ngClass]="
+            isEditMode ? 'fa-solid fa-pen-to-square' : 'fa-solid fa-check'
+          "
+        ></i>
         {{ isEditMode ? "Update Supplier" : "Save Supplier" }}
       </button>
-
     </div>
   </div>
   <!-- 🔥 END MODAL -->
@@ -83,62 +183,96 @@
   <!-- ========================================================= -->
   <!-- Filters Section -->
   <!-- ========================================================= -->
-  <div class="p-5 mb-6 rounded-2xl bg-white/70 shadow-xl border border-gray-200">
-    <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center gap-2">
+  <div
+    class="p-5 mb-6 rounded-2xl bg-white/70 shadow-xl border border-gray-200"
+  >
+    <h3
+      class="text-lg font-semibold mb-4 text-gray-700 flex items-center gap-2"
+    >
       <i class="fa-solid fa-filter text-blue-600"></i>
       Filter Suppliers
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
       <div class="relative">
         <i class="fa-solid fa-user text-gray-400 absolute left-3 top-3"></i>
-        <input type="text" placeholder="Supplier Name"
-               [(ngModel)]="filters.supplier_name" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <input
+          type="text"
+          placeholder="Supplier Name"
+          [(ngModel)]="filters.supplier_name"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
-        <i class="fa-solid fa-address-book text-gray-400 absolute left-3 top-3"></i>
-        <input type="text" placeholder="Contact Name"
-               [(ngModel)]="filters.contact_name" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <i
+          class="fa-solid fa-address-book text-gray-400 absolute left-3 top-3"
+        ></i>
+        <input
+          type="text"
+          placeholder="Contact Name"
+          [(ngModel)]="filters.contact_name"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
         <i class="fa-solid fa-envelope text-gray-400 absolute left-3 top-3"></i>
-        <input type="email" placeholder="Email"
-               [(ngModel)]="filters.contact_email" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <input
+          type="email"
+          placeholder="Email"
+          [(ngModel)]="filters.contact_email"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
         <i class="fa-solid fa-phone text-gray-400 absolute left-3 top-3"></i>
-        <input type="text" placeholder="Phone"
-               [(ngModel)]="filters.phone" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <input
+          type="text"
+          placeholder="Phone"
+          [(ngModel)]="filters.phone"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
         <i class="fa-solid fa-city text-gray-400 absolute left-3 top-3"></i>
-        <input type="text" placeholder="City"
-               [(ngModel)]="filters.city" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <input
+          type="text"
+          placeholder="City"
+          [(ngModel)]="filters.city"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
-        <i class="fa-solid fa-location-dot text-gray-400 absolute left-3 top-3"></i>
-        <input type="text" placeholder="State"
-               [(ngModel)]="filters.state" (input)="applyFilters()"
-               class="pl-10 w-full p-2 bg-gray-50 border rounded-xl" />
+        <i
+          class="fa-solid fa-location-dot text-gray-400 absolute left-3 top-3"
+        ></i>
+        <input
+          type="text"
+          placeholder="State"
+          [(ngModel)]="filters.state"
+          (input)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        />
       </div>
 
       <div class="relative">
         <i class="fa-solid fa-star text-yellow-500 absolute left-3 top-3"></i>
-        <select [(ngModel)]="filters.rating" (change)="applyFilters()"
-                class="pl-10 w-full p-2 bg-gray-50 border rounded-xl">
+        <select
+          [(ngModel)]="filters.rating"
+          (change)="applyFilters()"
+          class="pl-10 w-full p-2 bg-gray-50 border rounded-xl"
+        >
           <option value="">Rating (All)</option>
-          <option *ngFor="let r of [1,2,3,4,5]" [value]="r">
+          <option *ngFor="let r of [1, 2, 3, 4, 5]" [value]="r">
             {{ r }} {{ r === 1 ? "Star" : "Stars" }}
           </option>
         </select>
@@ -150,7 +284,6 @@
       >
         <i class="fa-solid fa-circle-xmark"></i> Clear Filters
       </button>
-
     </div>
   </div>
 
@@ -166,7 +299,10 @@
   </div>
 
   <div class="overflow-x-auto rounded-lg shadow">
-    <table *ngIf="!loading && suppliers.length > 0" class="w-full border-collapse">
+    <table
+      *ngIf="!loading && suppliers.length > 0"
+      class="w-full border-collapse"
+    >
       <thead class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <tr>
           <th class="p-3 text-left">ID</th>
@@ -181,9 +317,10 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let s of filteredSuppliers"
-            class="odd:bg-gray-50 even:bg-white hover:bg-blue-50 transition">
-          
+        <tr
+          *ngFor="let s of filteredSuppliers"
+          class="odd:bg-gray-50 even:bg-white hover:bg-blue-50 transition"
+        >
           <td class="p-3">{{ s.supplier_id }}</td>
           <td class="p-3 font-medium">{{ s.supplier_name }}</td>
           <td class="p-3">{{ s.contact_name }}</td>
@@ -191,51 +328,63 @@
           <td class="p-3">{{ s.phone }}</td>
 
           <td class="p-3">
-            {{ s.address?.addressStreet }},
-            {{ s.address?.addressCity }},
+            {{ s.address?.addressStreet }}, {{ s.address?.addressCity }},
             {{ s.address?.addressState }}
           </td>
 
           <td class="p-2">
-            <ng-container *ngFor="let star of [1,2,3,4,5]">
-              <i class="fa-solid fa-star"
-                 [ngClass]="star <= s.rating ? 'text-yellow-500' : 'text-gray-300'"></i>
+            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+              <i
+                class="fa-solid fa-star"
+                [ngClass]="
+                  star <= s.rating ? 'text-yellow-500' : 'text-gray-300'
+                "
+              ></i>
             </ng-container>
           </td>
 
           <td class="p-2">
             <div class="flex items-center gap-2">
-              <button class="bg-yellow-500 text-white px-3 py-1 rounded-md"
-                      (click)="editSupplier(s)">
+              <button
+                class="bg-yellow-500 text-white px-3 py-1 rounded-md"
+                (click)="editSupplier(s)"
+              >
                 <i class="fa-solid fa-pen"></i> Edit
               </button>
 
-              <button class="bg-red-600 text-white px-3 py-1 rounded-md"
-                      (click)="deleteSupplier(s.supplier_id)">
+              <button
+                class="bg-red-600 text-white px-3 py-1 rounded-md"
+                (click)="deleteSupplier(s.supplier_id)"
+              >
                 <i class="fa-solid fa-trash"></i> Delete
               </button>
 
-              <button *ngIf="!s.contractFile"
-                      class="bg-blue-600 text-white px-3 py-1 rounded-md"
-                      (click)="onUploadContract(s.supplier_id)">
+              <button
+                *ngIf="!s.contractFile"
+                class="bg-blue-600 text-white px-3 py-1 rounded-md"
+                (click)="onUploadContract(s.supplier_id)"
+              >
                 <i class="fa-solid fa-upload"></i> Upload Contract
               </button>
 
-              <button *ngIf="s.contractFile"
-                      class="bg-green-600 text-white px-3 py-1 rounded-md"
-                      (click)="onDownloadContract(s.supplier_id)">
+              <button
+                *ngIf="s.contractFile"
+                class="bg-green-600 text-white px-3 py-1 rounded-md"
+                (click)="onDownloadContract(s.supplier_id)"
+              >
                 <i class="fa-solid fa-download"></i> Download Contract
               </button>
             </div>
           </td>
-
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div *ngIf="!loading && suppliers.length === 0"
-       class="text-gray-600 mt-4 text-center flex justify-center items-center gap-2">
+  <div
+    *ngIf="!loading && suppliers.length === 0"
+    class="text-gray-600 mt-4 text-center flex justify-center items-center gap-2"
+  >
     <i class="fa-solid fa-ban text-red-500"></i> No suppliers found.
   </div>
 </div>
