@@ -159,7 +159,8 @@
     </div>
 
     <!-- Add Item -->
-    <div class="mb-4">
+    <!-- Add Item + Submit Order in one row -->
+    <div class="mb-6 flex items-center gap-4">
       <button
         type="button"
         (click)="addItem()"
@@ -167,16 +168,15 @@
       >
         + Add Item
       </button>
-    </div>
 
-    <!-- Submit -->
-    <button
-      type="submit"
-      [disabled]="orderForm.invalid"
-      class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
-    >
-      Submit Order
-    </button>
+      <button
+        type="submit"
+        [disabled]="orderForm.invalid"
+        class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
+      >
+        Submit Order
+      </button>
+    </div>
   </form>
 </div>
 
