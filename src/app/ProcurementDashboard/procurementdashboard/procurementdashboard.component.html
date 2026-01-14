@@ -1,10 +1,15 @@
 <div class="flex h-screen bg-gray-100">
   <!-- Sidebar -->
   <aside
-    class="w-64 bg-gradient-to-b from-orange-900 to-black-500 text-white shadow-lg"
+    class="w-64 h-screen flex flex-col bg-gradient-to-b from-orange-900 to-black-500 text-white shadow-lg"
   >
-    <div class="p-6 text-2xl font-semibold tracking-wide">Procurement Dashboard</div>
-    <nav class="space-y-2 px-4">
+    <!-- Header -->
+    <div class="p-6 text-2xl font-semibold tracking-wide">
+      <i class="fas fa-warehouse mr-2"></i> Procurement Dashboard
+    </div>
+
+    <!-- Navigation -->
+    <nav class="space-y-2 px-4 flex-1">
       <div
         (click)="selectedTab = 'create'"
         class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
@@ -12,8 +17,9 @@
           'bg-white text-blue-700 font-bold shadow': selectedTab === 'create'
         }"
       >
-        ➕ Create Order
+        <i class="fas fa-plus-circle"></i> Create Order
       </div>
+
       <div
         (click)="selectedTab = 'view'"
         class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
@@ -21,17 +27,31 @@
           'bg-white text-blue-700 font-bold shadow': selectedTab === 'view'
         }"
       >
-        👥 View Orders
+        <i class="fas fa-shopping-cart"></i> View Orders
       </div>
+
       <div
         (click)="selectedTab = 'view suppliers'"
         class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
         [ngClass]="{
-          'bg-white text-blue-700 font-bold shadow': selectedTab === 'view suppliers'
+          'bg-white text-blue-700 font-bold shadow':
+            selectedTab === 'view suppliers'
         }"
       >
-        👥 Manage Suppliers
+        <i class="fas fa-truck"></i> Manage Suppliers
       </div>
+
+      <div
+        (click)="selectedTab = 'generateContract'"
+        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
+        [ngClass]="{
+          'bg-white text-blue-700 font-bold shadow':
+            selectedTab === 'generateContract'
+        }"
+      >
+        <i class="fas fa-file-contract"></i> Generate Contract
+      </div>
+
       <div
         (click)="selectedTab = 'profile'"
         class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
@@ -39,22 +59,30 @@
           'bg-white text-blue-700 font-bold shadow': selectedTab === 'profile'
         }"
       >
-        👤 Profile
-      </div>
-      <div
-        (click)="Logout()"
-        class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition hover:bg-blue-500"
-      >
-        🚪 Logout
+        <i class="fas fa-user"></i> Profile
       </div>
     </nav>
+    <!-- Logout Button (sticks at bottom) -->
+    <div
+      class="flex items-center bg-red-600 border border-red-300 rounded-md text-white gap-2 p-3 m-4 cursor-pointer transition duration-200 hover:bg-red-700 mt-auto"
+      (click)="Logout()"
+    >
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </div>
+
   </aside>
 
   <!-- Main Content -->
   <main class="flex-1 p-8 overflow-auto">
     <app-create-order *ngIf="selectedTab === 'create'"></app-create-order>
     <app-view-order *ngIf="selectedTab === 'view'"></app-view-order>
-    <app-manage-suppliers *ngIf="selectedTab === 'view suppliers'"></app-manage-suppliers>
+    <app-manage-suppliers
+      *ngIf="selectedTab === 'view suppliers'"
+    ></app-manage-suppliers>
+    <app-generate-contract
+      *ngIf="selectedTab === 'generateContract'"
+    ></app-generate-contract>
     <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
   </main>
 </div>

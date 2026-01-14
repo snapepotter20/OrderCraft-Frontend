@@ -5,7 +5,7 @@
   >
     <div>
       <div class="p-6 text-xl font-bold tracking-wide border-b border-white/20">
-        📦 Inventory Dashboard
+        <i class="fas fa-box-open mr-2"></i> Inventory Dashboard
       </div>
       <nav class="space-y-1 px-4 mt-4">
         <div
@@ -16,8 +16,10 @@
               selectedTab === 'inventorytransactions'
           }"
         >
-          ➕ <span>Inventory Transactions</span>
+          <i class="fas fa-plus-circle"></i>
+          <span>Inventory Transactions</span>
         </div>
+
         <div
           (click)="selectedTab = 'requestedorders'"
           class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
@@ -26,7 +28,8 @@
               selectedTab === 'requestedorders'
           }"
         >
-          📋 <span>Requested Orders</span>
+          <i class="fas fa-clipboard-list"></i>
+          <span>Requested Orders</span>
         </div>
 
         <div
@@ -37,7 +40,8 @@
               selectedTab === 'completedorders'
           }"
         >
-          👤 <span>Completed Orders</span>
+          <i class="fas fa-check-circle"></i>
+          <span>Completed Orders</span>
         </div>
 
         <div
@@ -48,7 +52,7 @@
               selectedTab === 'returnedorders'
           }"
         >
-          <i class="fas fa-undo-alt text-blue-700"></i>
+          <i class="fas fa-undo-alt"></i>
           <span>Returned Orders</span>
         </div>
 
@@ -60,10 +64,11 @@
               selectedTab === 'stocks'
           }"
         >
-          🧾 <span>View All Stocks</span>
+          <i class="fas fa-boxes"></i>
+          <span>View All Stocks</span>
         </div>
 
-         <div
+        <div
           (click)="selectedTab = 'rawmaterials'"
           class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
           [ngClass]="{
@@ -71,7 +76,8 @@
               selectedTab === 'rawmaterials'
           }"
         >
-          🧾 <span>View raw materials</span>
+          <i class="fas fa-cubes"></i>
+          <span>View Raw Materials</span>
         </div>
 
         <div
@@ -82,17 +88,26 @@
               selectedTab === 'profile'
           }"
         >
-          👤 <span>Profile</span>
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
         </div>
       </nav>
     </div>
 
     <!-- Logout -->
+    <!-- <div
+      class="flex items-center border border-red-300 rounded-md gap-2 p-3 m-4 text-red-500 hover:text-white hover:bg-red-600 cursor-pointer transition duration-200"
+      (click)="Logout()"
+    >
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </div> -->
     <div
       class="flex items-center bg-red-600 border border-red-300 rounded-md text-white gap-2 p-3 m-4 rounded-md text-red-500 hover:text-white hover:bg-red-600 cursor-pointer transition duration-200"
       (click)="Logout()"
     >
-      🚪 <span>Logout</span>
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
     </div>
   </aside>
 
@@ -102,7 +117,9 @@
       *ngIf="selectedTab === 'inventorytransactions'"
     ></app-inventory-transactions>
     <app-view-stocks *ngIf="selectedTab === 'stocks'"></app-view-stocks>
-    <app-view-raw-materials *ngIf="selectedTab === 'rawmaterials'"></app-view-raw-materials>
+    <app-view-raw-materials
+      *ngIf="selectedTab === 'rawmaterials'"
+    ></app-view-raw-materials>
     <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
     <app-view-requested-orders-component
       *ngIf="selectedTab === 'requestedorders'"

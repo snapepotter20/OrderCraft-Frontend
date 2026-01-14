@@ -130,7 +130,7 @@ export class ProcurementService {
     });
   }
 
-    getAllCustomers(): Observable<any[]> {
+  getAllCustomers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.BASE_URL}/getallcustomers`, {
       headers: this.getAuthHeaders(),
     });
@@ -167,5 +167,16 @@ export class ProcurementService {
         responseType: 'blob',
       }
     );
+  }
+
+  // Generate contract API call
+  generateContract(supplierId: number): Observable<Blob> {
+    const headers = this.getAuthHeaders();
+    const url = `${this.BASE_URL}/suppliers/generateContract/${supplierId}`;
+
+    return this.http.get(url, {
+      headers,
+      responseType: 'blob', // important for file downloads
+    });
   }
 }

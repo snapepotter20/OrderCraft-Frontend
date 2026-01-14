@@ -5,7 +5,7 @@
   >
     <div>
       <div class="p-6 text-xl font-bold tracking-wide border-b border-white/20">
-        📦 Production Manager Dashboard
+        <i class="fas fa-industry mr-2"></i> Production Manager Dashboard
       </div>
       <nav class="space-y-1 px-4 mt-4">
         <div
@@ -16,8 +16,10 @@
               selectedTab === 'scheduled'
           }"
         >
-          ➕ <span>Scheduled Products</span>
+          <i class="fas fa-calendar-alt"></i>
+          <span>Scheduled Products</span>
         </div>
+
         <div
           (click)="selectedTab = 'delivered'"
           class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700"
@@ -26,8 +28,10 @@
               selectedTab === 'delivered'
           }"
         >
-          📋 <span>Delivered Products</span>
+          <i class="fas fa-clipboard-check"></i>
+          <span>Delivered Products</span>
         </div>
+
         <div
           (click)="selectedTab = 'stocks'"
           class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition duration-200 hover:bg-blue-700 relative"
@@ -36,11 +40,12 @@
               selectedTab === 'stocks'
           }"
         >
-          🧾 <span>Demanded Products</span>
+          <i class="fas fa-boxes"></i>
+          <span>Demanded Products</span>
 
           <!-- Bell icon -->
           <span class="relative ml-auto">
-            🔔
+            <i class="fas fa-bell"></i>
             <!-- Badge -->
             <span
               *ngIf="demandedCount > 0"
@@ -59,7 +64,8 @@
               selectedTab === 'profile'
           }"
         >
-          👤 <span>Profile</span>
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
         </div>
       </nav>
     </div>
@@ -69,15 +75,16 @@
       class="flex items-center bg-red-600 border border-red-300 rounded-md text-white gap-2 p-3 m-4 rounded-md text-red-500 hover:text-white hover:bg-red-600 cursor-pointer transition duration-200"
       (click)="Logout()"
     >
-      🚪 <span>Logout</span>
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main class="flex-1 p-8 overflow-auto">
-     <app-demanded-products *ngIf="selectedTab === 'stocks'"></app-demanded-products>
-     <app-scheduled-products *ngIf="selectedTab === 'scheduled'"></app-scheduled-products>
-     <app-delivered-products *ngIf="selectedTab === 'delivered'"></app-delivered-products>
-     <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
+    <app-demanded-products *ngIf="selectedTab === 'stocks'"></app-demanded-products>
+    <app-scheduled-products *ngIf="selectedTab === 'scheduled'"></app-scheduled-products>
+    <app-delivered-products *ngIf="selectedTab === 'delivered'"></app-delivered-products>
+    <app-profile *ngIf="selectedTab === 'profile'"></app-profile>
   </main>
 </div>
